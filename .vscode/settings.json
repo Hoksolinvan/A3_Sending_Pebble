@@ -1,0 +1,8 @@
+{
+    "stm32-for-vscode.armToolchainPath": "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-1.1/bin",
+    "stm32-for-vscode.makeConcurrentJobs": 4,
+    "stm32-for-vscode.makePath": "/usr/bin/make",
+    "stm32-for-vscode.openOCDPath": "/usr/bin/openocd",
+    "cortex-debug.armToolchainPath": "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-1.1/bin",
+    "cortex-debug.openocdPath": "/usr/bin/openocd"
+}

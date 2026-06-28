@@ -1,0 +1,1681 @@
+ARM GAS  /tmp/cc2yCkBP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"wl_lr_fhss.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c"
+  18              		.section	.text.wl_lr_fhss_init,"ax",%progbits
+  19              		.align	1
+  20              		.global	wl_lr_fhss_init
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	wl_lr_fhss_init:
+  26              	.LVL0:
+  27              	.LFB872:
+   1:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*!
+   2:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @file      wl_lr_fhss.c
+   3:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+   4:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @brief     STM32WL LR-FHSS driver implementation
+   5:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+   6:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * The Clear BSD License
+   7:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * Copyright Semtech Corporation 2021. All rights reserved.
+   8:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+   9:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * Redistribution and use in source and binary forms, with or without
+  10:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * modification, are permitted (subject to the limitations in the disclaimer
+  11:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * below) provided that the following conditions are met:
+  12:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *     * Redistributions of source code must retain the above copyright
+  13:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *       notice, this list of conditions and the following disclaimer.
+  14:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  15:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *       notice, this list of conditions and the following disclaimer in the
+  16:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *       documentation and/or other materials provided with the distribution.
+  17:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *     * Neither the name of the Semtech corporation nor the
+  18:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *       names of its contributors may be used to endorse or promote products
+  19:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *       derived from this software without specific prior written permission.
+  20:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+  21:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY
+  22:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+  23:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
+  24:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+  25:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE
+  26:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  27:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  28:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  29:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  30:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  31:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ARM GAS  /tmp/cc2yCkBP.s 			page 2
+
+
+  32:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * POSSIBILITY OF SUCH DAMAGE.
+  33:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  34:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  35:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+  36:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+  37:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  38:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  39:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #include "wl_lr_fhss.h"
+  40:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #include "lr_fhss_mac.h"
+  41:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  42:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+  43:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+  44:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  45:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  46:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  47:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+  48:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+  49:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  50:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  51:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  52:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /* \cond */
+  53:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  54:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_SET_MODULATION_PARAMS ( 0x8B )
+  55:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_SET_PKT_PARAMS ( 0x8C )
+  56:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  57:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_DISABLE_HOPPING ( 0 )
+  58:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_ENABLE_HOPPING ( 1 )
+  59:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  60:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_HOP_TABLE_SIZE ( 16 )
+  61:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_HOP_ENTRY_SIZE ( 6 )
+  62:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  63:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_GRID_3906_HZ_PLL_STEPS ( 4096 )
+  64:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_GRID_25391_HZ_PLL_STEPS ( 26624 )
+  65:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  66:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #define WL_LR_FHSS_GRID_INDEX_TO_PLL_STEPS ( 512 )
+  67:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  68:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /* \endcond */
+  69:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  70:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+  71:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+  72:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  73:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  74:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  75:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+  76:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+  77:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  78:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  79:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  80:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+  81:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+  82:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PRIVATE FUNCTION DECLARATIONS -------------------------------------------
+  83:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  84:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  85:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*!
+  86:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @brief Configure the radio to perform frequency hopping
+  87:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+  88:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  context  Chip implementation context
+ARM GAS  /tmp/cc2yCkBP.s 			page 3
+
+
+  89:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  nb_bytes Total number of bytes
+  90:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  nb_hops  Total number of hops
+  91:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+  92:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @returns Operation status
+  93:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+  94:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_write_hop_config( const uint8_t nb_bytes, const uint8_t nb_hops );
+  95:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+  96:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*!
+  97:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @brief Write a hop frequency/duration pair to the radio hop table
+  98:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+  99:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  context           Chip implementation context
+ 100:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  index             Index to chip hop table
+ 101:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  nb_symbols        Hop duration in symbols
+ 102:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  freq_in_pll_steps Hop frequency, in PLL steps
+ 103:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+ 104:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @returns Operation status
+ 105:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+ 106:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_write_hop( const uint8_t index, const uint16_t nb_symbols,
+ 107:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                      const uint32_t freq_in_pll_steps );
+ 108:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 109:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*!
+ 110:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @brief Get Frequency, in PLL steps, of the next hop
+ 111:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+ 112:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  params stm32wl LR-FHSS parameter structure
+ 113:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [out] state  stm32wl LR-FHSS state structure that will be initialized by this function
+ 114:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+ 115:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @returns Frequency, in PLL steps, of the next hop
+ 116:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+ 117:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** uint32_t wl_lr_fhss_get_next_freq_in_pll_steps( const wl_lr_fhss_params_t *params,
+ 118:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                 wl_lr_fhss_state_t        *state );
+ 119:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 120:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*!
+ 121:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @brief Get grid frequency, in PLL steps
+ 122:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+ 123:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @param [in]  params stm32wl LR-FHSS parameter structure
+ 124:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  *
+ 125:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * @returns Grid frequency, in PLL steps
+ 126:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+ 127:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** static inline unsigned int wl_lr_fhss_get_grid_in_pll_steps( const wl_lr_fhss_params_t *params );
+ 128:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 129:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+ 130:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+ 131:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+ 132:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+ 133:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 134:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_init( const wl_lr_fhss_params_t *params )
+ 135:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+  28              		.loc 1 135 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 16
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 135 1 is_stmt 0 view .LVU1
+  33 0000 10B5     		push	{r4, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+  36              		.cfi_offset 14, -4
+  37 0002 84B0     		sub	sp, sp, #16
+ARM GAS  /tmp/cc2yCkBP.s 			page 4
+
+
+  38              		.cfi_def_cfa_offset 24
+ 136:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = RADIO_STATUS_OK;
+  39              		.loc 1 136 5 is_stmt 1 view .LVU2
+  40              	.LVL1:
+ 137:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_SetPacketType( PACKET_TYPE_LR_FHSS );
+  41              		.loc 1 137 5 view .LVU3
+  42 0004 0320     		movs	r0, #3
+  43              	.LVL2:
+  44              		.loc 1 137 5 is_stmt 0 view .LVU4
+  45 0006 FFF7FEFF 		bl	SUBGRF_SetPacketType
+  46              	.LVL3:
+ 138:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 139:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint8_t pkt_params_buffer[8] = {0};
+  47              		.loc 1 139 5 is_stmt 1 view .LVU5
+  48              		.loc 1 139 13 is_stmt 0 view .LVU6
+  49 000a 02A9     		add	r1, sp, #8
+  50 000c 0024     		movs	r4, #0
+  51 000e 0294     		str	r4, [sp, #8]
+  52 0010 4C60     		str	r4, [r1, #4]
+ 140:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint8_t mod_params_buffer[] = {32, 0, 0, MOD_SHAPING_G_BT_1, 0, 0, 0, 0};
+  53              		.loc 1 140 5 is_stmt 1 view .LVU7
+  54              		.loc 1 140 13 is_stmt 0 view .LVU8
+  55 0012 094B     		ldr	r3, .L3
+  56 0014 0093     		str	r3, [sp]
+  57 0016 0194     		str	r4, [sp, #4]
+ 141:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 142:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_WriteCommand( RADIO_SET_PACKETPARAMS, pkt_params_buffer, sizeof( pkt_params_buffer ) );
+  58              		.loc 1 142 5 is_stmt 1 view .LVU9
+  59 0018 0822     		movs	r2, #8
+  60 001a 8C20     		movs	r0, #140
+  61 001c FFF7FEFF 		bl	SUBGRF_WriteCommand
+  62              	.LVL4:
+ 143:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 144:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_WriteCommand( RADIO_SET_MODULATIONPARAMS, mod_params_buffer, sizeof( mod_params_buffer )
+  63              		.loc 1 144 5 view .LVU10
+  64 0020 0822     		movs	r2, #8
+  65 0022 6946     		mov	r1, sp
+  66 0024 8B20     		movs	r0, #139
+  67 0026 FFF7FEFF 		bl	SUBGRF_WriteCommand
+  68              	.LVL5:
+ 145:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 146:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_SetBufferBaseAddress( 0x00, 0x00 );
+  69              		.loc 1 146 5 view .LVU11
+  70 002a 2146     		mov	r1, r4
+  71 002c 2046     		mov	r0, r4
+  72 002e FFF7FEFF 		bl	SUBGRF_SetBufferBaseAddress
+  73              	.LVL6:
+ 147:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return status;
+  74              		.loc 1 147 5 view .LVU12
+ 148:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+  75              		.loc 1 148 1 is_stmt 0 view .LVU13
+  76 0032 2046     		mov	r0, r4
+  77 0034 04B0     		add	sp, sp, #16
+  78              		.cfi_def_cfa_offset 8
+  79              		@ sp needed
+  80 0036 10BD     		pop	{r4, pc}
+  81              	.L4:
+ARM GAS  /tmp/cc2yCkBP.s 			page 5
+
+
+  82              		.align	2
+  83              	.L3:
+  84 0038 2000000B 		.word	184549408
+  85              		.cfi_endproc
+  86              	.LFE872:
+  88              		.section	.text.wl_lr_fhss_write_payload,"ax",%progbits
+  89              		.align	1
+  90              		.global	wl_lr_fhss_write_payload
+  91              		.syntax unified
+  92              		.thumb
+  93              		.thumb_func
+  95              	wl_lr_fhss_write_payload:
+  96              	.LVL7:
+  97              	.LFB875:
+ 149:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 150:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_process_parameters( const wl_lr_fhss_params_t *params, uint16_t hop_seque
+ 151:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                               uint16_t payload_length, wl_lr_fhss_state_t *state )
+ 152:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 153:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     lr_fhss_process_parameters( &params->lr_fhss_params, payload_length, &state->digest );
+ 154:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 155:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( state->digest.nb_bytes > LR_FHSS_MAX_PHY_PAYLOAD_BYTES )
+ 156:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 157:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         return RADIO_STATUS_UNKNOWN_VALUE;
+ 158:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 159:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( params->lr_fhss_params.grid == LR_FHSS_V1_GRID_25391_HZ )
+ 160:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 161:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( params->device_offset > 25 || params->device_offset < -26 )
+ 162:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 163:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             return RADIO_STATUS_UNKNOWN_VALUE;
+ 164:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 165:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( params->lr_fhss_params.bw < LR_FHSS_V1_BW_722656_HZ )
+ 166:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 167:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             return RADIO_STATUS_UNKNOWN_VALUE;
+ 168:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 169:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 170:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( params->lr_fhss_params.grid == LR_FHSS_V1_GRID_3906_HZ )
+ 171:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 172:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( params->device_offset > 3 || params->device_offset < -4 )
+ 173:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 174:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             return RADIO_STATUS_UNKNOWN_VALUE;
+ 175:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 176:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 177:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 178:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     // Initialize hop index and params
+ 179:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     state->current_hop = 0;
+ 180:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status =
+ 181:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         lr_fhss_get_hop_params( &params->lr_fhss_params, &state->hop_params, &state->lfsr_state, ho
+ 182:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 183:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 184:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         return ( radio_status_t ) status;
+ 185:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 186:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 187:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     // Skip the hop frequencies inside the set [0, 4 - header_count):
+ 188:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( params->lr_fhss_params.enable_hopping != 0 )
+ 189:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         for( int i = 0; i < 4 - params->lr_fhss_params.header_count; ++i )
+ 191:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ARM GAS  /tmp/cc2yCkBP.s 			page 6
+
+
+ 192:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             lr_fhss_get_next_state( &state->lfsr_state, &state->hop_params );
+ 193:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 194:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 195:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 196:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     state->next_freq_in_pll_steps = wl_lr_fhss_get_next_freq_in_pll_steps( params, state );
+ 197:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 198:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 199:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 200:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_write_hop_sequence_head( const wl_lr_fhss_params_t *params,
+ 201:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                    wl_lr_fhss_state_t *state )
+ 202:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 203:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_write_hop_config( state->digest.nb_bytes, state->digest.nb_h
+ 204:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 205:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 206:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         return status;
+ 207:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 208:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 209:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     const uint16_t pulse_shape_compensation = 1;
+ 210:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 211:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( params->lr_fhss_params.enable_hopping == 0 )
+ 212:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 213:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         // (LR_FHSS_HEADER_BITS + pulse_shape_compensation) symbols on first sync_word, LR_FHSS_HEA
+ 214:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         // sync_words, LR_FHSS_BLOCK_BITS on payload
+ 215:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         const uint16_t nb_symbols = state->digest.nb_bits + pulse_shape_compensation;
+ 216:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 217:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         status = wl_lr_fhss_write_hop( state->current_hop, nb_symbols, state->next_freq_in_pll_step
+ 218:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( status != RADIO_STATUS_OK )
+ 219:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 220:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             return status;
+ 221:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 222:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->current_hop++;
+ 223:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits = 0;
+ 224:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 225:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     else
+ 226:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 227:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         // fill at most WL_LR_FHSS_HOP_TABLE_SIZE hops of the hardware hop table
+ 228:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         uint8_t truncated_hops = state->digest.nb_hops;
+ 229:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( truncated_hops > WL_LR_FHSS_HOP_TABLE_SIZE )
+ 230:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 231:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             truncated_hops = WL_LR_FHSS_HOP_TABLE_SIZE;
+ 232:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 233:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 234:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         while( state->current_hop < truncated_hops )
+ 235:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 236:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             uint16_t nb_symbols;
+ 237:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 238:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             // (LR_FHSS_HEADER_BITS + pulse_shape_compensation) symbols on first sync_word, LR_FHSS
+ 239:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             // next sync_words, LR_FHSS_BLOCK_BITS on payload
+ 240:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             if( state->current_hop >= params->lr_fhss_params.header_count )
+ 241:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 242:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 if( state->digest.nb_bits > LR_FHSS_BLOCK_BITS )
+ 243:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 {
+ 244:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                     nb_symbols = LR_FHSS_BLOCK_BITS;
+ 245:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 }
+ 246:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 else
+ 247:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 {
+ 248:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                     nb_symbols = state->digest.nb_bits;
+ARM GAS  /tmp/cc2yCkBP.s 			page 7
+
+
+ 249:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 }
+ 250:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             }
+ 251:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             else if( state->current_hop > 0 )
+ 252:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 253:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 nb_symbols = LR_FHSS_HEADER_BITS;
+ 254:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             }
+ 255:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             else
+ 256:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 257:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 nb_symbols = LR_FHSS_HEADER_BITS + pulse_shape_compensation;
+ 258:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             }
+ 259:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 260:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             status = wl_lr_fhss_write_hop( state->current_hop, nb_symbols, state->next_freq_in_pll_
+ 261:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             if( status != RADIO_STATUS_OK )
+ 262:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 263:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 return status;
+ 264:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             }
+ 265:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 266:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             state->current_hop++;
+ 267:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             state->digest.nb_bits -= nb_symbols;
+ 268:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 269:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             state->next_freq_in_pll_steps = wl_lr_fhss_get_next_freq_in_pll_steps( params, state );
+ 270:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 271:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 272:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 273:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return status;
+ 274:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 275:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 276:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_write_payload( const wl_lr_fhss_state_t *state,
+ 277:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                          const uint8_t *payload )
+ 278:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+  98              		.loc 1 278 1 is_stmt 1 view -0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102              		.loc 1 278 1 is_stmt 0 view .LVU15
+ 103 0000 08B5     		push	{r3, lr}
+ 104              		.cfi_def_cfa_offset 8
+ 105              		.cfi_offset 3, -8
+ 106              		.cfi_offset 14, -4
+ 279:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     //return wl_write_buffer( context, 0x00, payload, state->digest.nb_bytes );
+ 280:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_WriteBuffer( 0x00, ( uint8_t * ) payload, state->digest.nb_bytes );
+ 107              		.loc 1 280 5 is_stmt 1 view .LVU16
+ 108 0002 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 109 0004 0020     		movs	r0, #0
+ 110              	.LVL8:
+ 111              		.loc 1 280 5 is_stmt 0 view .LVU17
+ 112 0006 FFF7FEFF 		bl	SUBGRF_WriteBuffer
+ 113              	.LVL9:
+ 281:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 114              		.loc 1 281 5 is_stmt 1 view .LVU18
+ 282:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 115              		.loc 1 282 1 is_stmt 0 view .LVU19
+ 116 000a 0020     		movs	r0, #0
+ 117 000c 08BD     		pop	{r3, pc}
+ 118              		.cfi_endproc
+ 119              	.LFE875:
+ 121              		.section	.text.wl_lr_fhss_handle_tx_done,"ax",%progbits
+ARM GAS  /tmp/cc2yCkBP.s 			page 8
+
+
+ 122              		.align	1
+ 123              		.global	wl_lr_fhss_handle_tx_done
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	wl_lr_fhss_handle_tx_done:
+ 129              	.LVL10:
+ 130              	.LFB878:
+ 283:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 284:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_build_frame( const wl_lr_fhss_params_t *params,
+ 285:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                        wl_lr_fhss_state_t *state, uint16_t hop_sequence_id,
+ 286:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                        const uint8_t *payload, uint16_t payload_length,
+ 287:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                        uint32_t *first_frequency_in_pll_steps )
+ 288:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 289:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_process_parameters( params, hop_sequence_id, payload_length,
+ 290:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 291:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 292:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         return status;
+ 293:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 294:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 295:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( first_frequency_in_pll_steps != NULL )
+ 296:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 297:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         *first_frequency_in_pll_steps = state->next_freq_in_pll_steps;
+ 298:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 299:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 300:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint8_t tx_buffer[LR_FHSS_MAX_PHY_PAYLOAD_BYTES];
+ 301:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     lr_fhss_build_frame( &params->lr_fhss_params, state->hop_params.hop_sequence_id, payload, paylo
+ 302:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                          tx_buffer );
+ 303:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 304:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     status = wl_lr_fhss_write_payload( state, tx_buffer );
+ 305:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 306:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 307:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         return status;
+ 308:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 309:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     status = wl_lr_fhss_write_hop_sequence_head( params, state );
+ 310:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 311:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return status;
+ 312:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 313:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 314:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_handle_hop( const wl_lr_fhss_params_t *params,
+ 315:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                       wl_lr_fhss_state_t *state )
+ 316:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 317:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( state->current_hop < state->digest.nb_hops )
+ 318:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 319:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         uint16_t nb_bits;
+ 320:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( state->digest.nb_bits > LR_FHSS_BLOCK_BITS )
+ 321:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 322:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             nb_bits = LR_FHSS_BLOCK_BITS;
+ 323:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 324:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         else
+ 325:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 326:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             nb_bits = state->digest.nb_bits;
+ 327:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 328:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         radio_status_t status = wl_lr_fhss_write_hop( state->current_hop % WL_LR_FHSS_HOP_TABLE_SIZ
+ 329:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                       LR_FHSS_BLOCK_BITS, state->next_freq_in_pll_s
+ 330:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( status != RADIO_STATUS_OK )
+ 331:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ARM GAS  /tmp/cc2yCkBP.s 			page 9
+
+
+ 332:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             return status;
+ 333:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 334:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 335:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->current_hop++;
+ 336:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits -= nb_bits;
+ 337:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->next_freq_in_pll_steps = wl_lr_fhss_get_next_freq_in_pll_steps( params, state );
+ 338:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 339:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 340:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 341:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 342:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_handle_tx_done( const wl_lr_fhss_params_t *params,
+ 343:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                           wl_lr_fhss_state_t *state )
+ 344:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 131              		.loc 1 344 1 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		.loc 1 344 1 is_stmt 0 view .LVU21
+ 136 0000 08B5     		push	{r3, lr}
+ 137              		.cfi_def_cfa_offset 8
+ 138              		.cfi_offset 3, -8
+ 139              		.cfi_offset 14, -4
+ 345:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     //const uint8_t ctrl = WL_LR_FHSS_DISABLE_HOPPING;
+ 346:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 347:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     //return wl_write_register( context, WL_LR_FHSS_REG_CTRL, &ctrl, 1 );
+ 348:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_WriteRegister( WL_LR_FHSS_REG_CTRL, WL_LR_FHSS_DISABLE_HOPPING );
+ 140              		.loc 1 348 5 is_stmt 1 view .LVU22
+ 141 0002 0021     		movs	r1, #0
+ 142              	.LVL11:
+ 143              		.loc 1 348 5 is_stmt 0 view .LVU23
+ 144 0004 40F28530 		movw	r0, #901
+ 145              	.LVL12:
+ 146              		.loc 1 348 5 view .LVU24
+ 147 0008 FFF7FEFF 		bl	SUBGRF_WriteRegister
+ 148              	.LVL13:
+ 349:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 149              		.loc 1 349 5 is_stmt 1 view .LVU25
+ 350:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 150              		.loc 1 350 1 is_stmt 0 view .LVU26
+ 151 000c 0020     		movs	r0, #0
+ 152 000e 08BD     		pop	{r3, pc}
+ 153              		.cfi_endproc
+ 154              	.LFE878:
+ 156              		.section	.text.wl_lr_fhss_write_hop_config,"ax",%progbits
+ 157              		.align	1
+ 158              		.global	wl_lr_fhss_write_hop_config
+ 159              		.syntax unified
+ 160              		.thumb
+ 161              		.thumb_func
+ 163              	wl_lr_fhss_write_hop_config:
+ 164              	.LVL14:
+ 165              	.LFB879:
+ 351:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 352:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** /*
+ 353:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * -----------------------------------------------------------------------------
+ 354:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  * --- PRIVATE FUNCTIONS DEFINITION --------------------------------------------
+ 355:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****  */
+ARM GAS  /tmp/cc2yCkBP.s 			page 10
+
+
+ 356:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 357:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_write_hop_config( const uint8_t nb_bytes, const uint8_t nb_hops )
+ 358:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 166              		.loc 1 358 1 is_stmt 1 view -0
+ 167              		.cfi_startproc
+ 168              		@ args = 0, pretend = 0, frame = 8
+ 169              		@ frame_needed = 0, uses_anonymous_args = 0
+ 170              		.loc 1 358 1 is_stmt 0 view .LVU28
+ 171 0000 00B5     		push	{lr}
+ 172              		.cfi_def_cfa_offset 4
+ 173              		.cfi_offset 14, -4
+ 174 0002 83B0     		sub	sp, sp, #12
+ 175              		.cfi_def_cfa_offset 16
+ 359:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint8_t data[] = { WL_LR_FHSS_ENABLE_HOPPING, nb_bytes, nb_hops };
+ 176              		.loc 1 359 5 is_stmt 1 view .LVU29
+ 177              		.loc 1 359 13 is_stmt 0 view .LVU30
+ 178 0004 0123     		movs	r3, #1
+ 179 0006 8DF80430 		strb	r3, [sp, #4]
+ 180 000a 8DF80500 		strb	r0, [sp, #5]
+ 181 000e 8DF80610 		strb	r1, [sp, #6]
+ 360:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 361:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     //return wl_write_register( context, WL_LR_FHSS_REG_CTRL, data, 3 );
+ 362:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_WriteRegisters( WL_LR_FHSS_REG_CTRL, data, 3 );
+ 182              		.loc 1 362 5 is_stmt 1 view .LVU31
+ 183 0012 0322     		movs	r2, #3
+ 184 0014 01A9     		add	r1, sp, #4
+ 185              	.LVL15:
+ 186              		.loc 1 362 5 is_stmt 0 view .LVU32
+ 187 0016 40F28530 		movw	r0, #901
+ 188              	.LVL16:
+ 189              		.loc 1 362 5 view .LVU33
+ 190 001a FFF7FEFF 		bl	SUBGRF_WriteRegisters
+ 191              	.LVL17:
+ 363:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 192              		.loc 1 363 5 is_stmt 1 view .LVU34
+ 364:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 193              		.loc 1 364 1 is_stmt 0 view .LVU35
+ 194 001e 0020     		movs	r0, #0
+ 195 0020 03B0     		add	sp, sp, #12
+ 196              		.cfi_def_cfa_offset 4
+ 197              		@ sp needed
+ 198 0022 5DF804FB 		ldr	pc, [sp], #4
+ 199              		.cfi_endproc
+ 200              	.LFE879:
+ 202              		.section	.text.wl_lr_fhss_write_hop,"ax",%progbits
+ 203              		.align	1
+ 204              		.global	wl_lr_fhss_write_hop
+ 205              		.syntax unified
+ 206              		.thumb
+ 207              		.thumb_func
+ 209              	wl_lr_fhss_write_hop:
+ 210              	.LVL18:
+ 211              	.LFB880:
+ 365:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 366:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** radio_status_t wl_lr_fhss_write_hop( const uint8_t index, const uint16_t nb_symbols,
+ 367:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                      const uint32_t freq_in_pll_steps )
+ 368:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ARM GAS  /tmp/cc2yCkBP.s 			page 11
+
+
+ 212              		.loc 1 368 1 is_stmt 1 view -0
+ 213              		.cfi_startproc
+ 214              		@ args = 0, pretend = 0, frame = 8
+ 215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 369:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( index >= WL_LR_FHSS_HOP_TABLE_SIZE )
+ 216              		.loc 1 369 5 view .LVU37
+ 217              		.loc 1 369 7 is_stmt 0 view .LVU38
+ 218 0000 0F28     		cmp	r0, #15
+ 219 0002 20D8     		bhi	.L13
+ 368:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( index >= WL_LR_FHSS_HOP_TABLE_SIZE )
+ 220              		.loc 1 368 1 view .LVU39
+ 221 0004 00B5     		push	{lr}
+ 222              		.cfi_def_cfa_offset 4
+ 223              		.cfi_offset 14, -4
+ 224 0006 83B0     		sub	sp, sp, #12
+ 225              		.cfi_def_cfa_offset 16
+ 370:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 371:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         return RADIO_STATUS_ERROR;
+ 372:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 373:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 374:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint8_t data[WL_LR_FHSS_HOP_ENTRY_SIZE] =
+ 226              		.loc 1 374 5 is_stmt 1 view .LVU40
+ 375:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 376:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         ( uint8_t )( nb_symbols >> 8 ), ( uint8_t ) nb_symbols,
+ 227              		.loc 1 376 9 is_stmt 0 view .LVU41
+ 228 0008 0B0A     		lsrs	r3, r1, #8
+ 374:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 229              		.loc 1 374 13 view .LVU42
+ 230 000a 8DF80030 		strb	r3, [sp]
+ 231 000e 8DF80110 		strb	r1, [sp, #1]
+ 377:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         ( uint8_t )( freq_in_pll_steps >> 24 ), ( uint8_t )( freq_in_pll_steps >> 16 ),
+ 232              		.loc 1 377 9 view .LVU43
+ 233 0012 130E     		lsrs	r3, r2, #24
+ 374:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 234              		.loc 1 374 13 view .LVU44
+ 235 0014 8DF80230 		strb	r3, [sp, #2]
+ 236              		.loc 1 377 49 view .LVU45
+ 237 0018 C2F30743 		ubfx	r3, r2, #16, #8
+ 374:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 238              		.loc 1 374 13 view .LVU46
+ 239 001c 8DF80330 		strb	r3, [sp, #3]
+ 378:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         ( uint8_t )( freq_in_pll_steps >> 8 ), ( uint8_t ) freq_in_pll_steps,
+ 240              		.loc 1 378 9 view .LVU47
+ 241 0020 C2F30723 		ubfx	r3, r2, #8, #8
+ 374:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 242              		.loc 1 374 13 view .LVU48
+ 243 0024 8DF80430 		strb	r3, [sp, #4]
+ 244 0028 8DF80520 		strb	r2, [sp, #5]
+ 379:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     };
+ 380:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 381:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     //return wl_write_register( context, WL_LR_FHSS_REG_NUM_SYMBOLS_0 + ( WL_LR_FHSS_HOP_ENTRY_SIZE
+ 382:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     //                              data, WL_LR_FHSS_HOP_ENTRY_SIZE );
+ 383:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     SUBGRF_WriteRegisters( WL_LR_FHSS_REG_NUM_SYMBOLS_0 + ( WL_LR_FHSS_HOP_ENTRY_SIZE * index ),
+ 245              		.loc 1 383 5 is_stmt 1 view .LVU49
+ 246 002c 00EB4000 		add	r0, r0, r0, lsl #1
+ 247              	.LVL19:
+ 248              		.loc 1 383 5 is_stmt 0 view .LVU50
+ARM GAS  /tmp/cc2yCkBP.s 			page 12
+
+
+ 249 0030 4000     		lsls	r0, r0, #1
+ 250 0032 0622     		movs	r2, #6
+ 251              	.LVL20:
+ 252              		.loc 1 383 5 view .LVU51
+ 253 0034 6946     		mov	r1, sp
+ 254              	.LVL21:
+ 255              		.loc 1 383 5 view .LVU52
+ 256 0036 00F56270 		add	r0, r0, #904
+ 257 003a FFF7FEFF 		bl	SUBGRF_WriteRegisters
+ 258              	.LVL22:
+ 384:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                            data, WL_LR_FHSS_HOP_ENTRY_SIZE );
+ 385:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 259              		.loc 1 385 5 is_stmt 1 view .LVU53
+ 260              		.loc 1 385 12 is_stmt 0 view .LVU54
+ 261 003e 0020     		movs	r0, #0
+ 386:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 262              		.loc 1 386 1 view .LVU55
+ 263 0040 03B0     		add	sp, sp, #12
+ 264              		.cfi_def_cfa_offset 4
+ 265              		@ sp needed
+ 266 0042 5DF804FB 		ldr	pc, [sp], #4
+ 267              	.LVL23:
+ 268              	.L13:
+ 269              		.cfi_def_cfa_offset 0
+ 270              		.cfi_restore 14
+ 371:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 271              		.loc 1 371 16 view .LVU56
+ 272 0046 0320     		movs	r0, #3
+ 273              	.LVL24:
+ 274              		.loc 1 386 1 view .LVU57
+ 275 0048 7047     		bx	lr
+ 276              		.cfi_endproc
+ 277              	.LFE880:
+ 279              		.section	.text.wl_lr_fhss_get_next_freq_in_pll_steps,"ax",%progbits
+ 280              		.align	1
+ 281              		.global	wl_lr_fhss_get_next_freq_in_pll_steps
+ 282              		.syntax unified
+ 283              		.thumb
+ 284              		.thumb_func
+ 286              	wl_lr_fhss_get_next_freq_in_pll_steps:
+ 287              	.LVL25:
+ 288              	.LFB881:
+ 387:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 388:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** uint32_t wl_lr_fhss_get_next_freq_in_pll_steps( const wl_lr_fhss_params_t *params,
+ 389:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                 wl_lr_fhss_state_t        *state )
+ 390:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 289              		.loc 1 390 1 is_stmt 1 view -0
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 0
+ 292              		@ frame_needed = 0, uses_anonymous_args = 0
+ 293              		.loc 1 390 1 is_stmt 0 view .LVU59
+ 294 0000 38B5     		push	{r3, r4, r5, lr}
+ 295              		.cfi_def_cfa_offset 16
+ 296              		.cfi_offset 3, -16
+ 297              		.cfi_offset 4, -12
+ 298              		.cfi_offset 5, -8
+ 299              		.cfi_offset 14, -4
+ARM GAS  /tmp/cc2yCkBP.s 			page 13
+
+
+ 300 0002 0446     		mov	r4, r0
+ 301 0004 0D46     		mov	r5, r1
+ 391:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #ifdef HOP_AT_CENTER_FREQ
+ 392:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     const int16_t freq_table  = 0;
+ 393:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t      grid_offset = 0;
+ 394:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #else
+ 395:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     const int16_t freq_table =
+ 302              		.loc 1 395 5 is_stmt 1 view .LVU60
+ 396:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         lr_fhss_get_next_freq_in_grid( &state->lfsr_state, &state->hop_params, &params->lr_fhss_par
+ 303              		.loc 1 396 9 is_stmt 0 view .LVU61
+ 304 0006 0246     		mov	r2, r0
+ 305 0008 01F11400 		add	r0, r1, #20
+ 306              	.LVL26:
+ 307              		.loc 1 396 9 view .LVU62
+ 308 000c FFF7FEFF 		bl	lr_fhss_get_next_freq_in_grid
+ 309              	.LVL27:
+ 397:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t nb_channel_in_grid = params->lr_fhss_params.grid ? 8 : 52;
+ 310              		.loc 1 397 5 is_stmt 1 view .LVU63
+ 311              		.loc 1 397 57 is_stmt 0 view .LVU64
+ 312 0010 A179     		ldrb	r1, [r4, #6]	@ zero_extendqisi2
+ 313              		.loc 1 397 67 view .LVU65
+ 314 0012 F9B1     		cbz	r1, .L22
+ 315              		.loc 1 397 67 discriminator 1 view .LVU66
+ 316 0014 0823     		movs	r3, #8
+ 317              	.L19:
+ 318              	.LVL28:
+ 398:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t grid_offset        = ( 1 + ( state->hop_params.n_grid % 2 ) ) * ( nb_channel_in_grid /
+ 319              		.loc 1 398 5 is_stmt 1 view .LVU67
+ 320              		.loc 1 398 60 is_stmt 0 view .LVU68
+ 321 0016 2A88     		ldrh	r2, [r5]
+ 322              		.loc 1 398 68 view .LVU69
+ 323 0018 02F00102 		and	r2, r2, #1
+ 324              		.loc 1 398 99 view .LVU70
+ 325 001c 5B08     		lsrs	r3, r3, #1
+ 326              	.LVL29:
+ 327              		.loc 1 398 14 view .LVU71
+ 328 001e 02FB0333 		mla	r3, r2, r3, r3
+ 329              	.LVL30:
+ 399:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #endif
+ 400:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 401:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     unsigned int grid_in_pll_steps = wl_lr_fhss_get_grid_in_pll_steps( params );
+ 330              		.loc 1 401 5 is_stmt 1 view .LVU72
+ 331              	.LBB4:
+ 332              	.LBI4:
+ 402:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t     freq              = params->center_freq_in_pll_steps - freq_table * grid_in_pll_st
+ 403:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                      ( params->device_offset + grid_offset ) * WL_LR_FHSS_GRID_INDE
+ 404:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 405:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #ifndef HOP_AT_CENTER_FREQ
+ 406:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     // Perform frequency correction for every other sync header
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( params->lr_fhss_params.enable_hopping && ( state->current_hop < params->lr_fhss_params.head
+ 408:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 409:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( ( ( ( params->lr_fhss_params.header_count - state->current_hop ) % 2 ) == 0 ) )
+ 410:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 411:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             // OFFSET_SYNCWORD = 488.28125 / 2, and FREQ_STEP = 0.95367431640625, so
+ 412:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             // OFFSET_SYNCWORD / FREQ_STEP = 256
+ 413:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             freq = freq + 256;
+ 414:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ARM GAS  /tmp/cc2yCkBP.s 			page 14
+
+
+ 415:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 416:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** #endif
+ 417:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return freq;
+ 418:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 419:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 420:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** static inline unsigned int wl_lr_fhss_get_grid_in_pll_steps( const wl_lr_fhss_params_t *params )
+ 333              		.loc 1 420 28 view .LVU73
+ 334              	.LBB5:
+ 421:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** {
+ 422:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return ( params->lr_fhss_params.grid == LR_FHSS_V1_GRID_3906_HZ ) ? WL_LR_FHSS_GRID_3906_HZ_PLL
+ 335              		.loc 1 422 5 view .LVU74
+ 336              		.loc 1 422 107 is_stmt 0 view .LVU75
+ 337 0022 0129     		cmp	r1, #1
+ 338 0024 18D0     		beq	.L25
+ 339              		.loc 1 422 107 discriminator 2 view .LVU76
+ 340 0026 4FF4D041 		mov	r1, #26624
+ 341              	.L20:
+ 342              	.LVL31:
+ 343              		.loc 1 422 107 discriminator 2 view .LVU77
+ 344              	.LBE5:
+ 345              	.LBE4:
+ 402:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t     freq              = params->center_freq_in_pll_steps - freq_table * grid_in_pll_st
+ 346              		.loc 1 402 5 is_stmt 1 view .LVU78
+ 402:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t     freq              = params->center_freq_in_pll_steps - freq_table * grid_in_pll_st
+ 347              		.loc 1 402 44 is_stmt 0 view .LVU79
+ 348 002a E268     		ldr	r2, [r4, #12]
+ 402:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t     freq              = params->center_freq_in_pll_steps - freq_table * grid_in_pll_st
+ 349              		.loc 1 402 71 view .LVU80
+ 350 002c 01FB1020 		mls	r0, r1, r0, r2
+ 351              	.LVL32:
+ 403:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 352              		.loc 1 403 46 view .LVU81
+ 353 0030 94F91020 		ldrsb	r2, [r4, #16]
+ 403:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 354              		.loc 1 403 62 view .LVU82
+ 355 0034 1344     		add	r3, r3, r2
+ 356              	.LVL33:
+ 402:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t     freq              = params->center_freq_in_pll_steps - freq_table * grid_in_pll_st
+ 357              		.loc 1 402 18 view .LVU83
+ 358 0036 A0EB4320 		sub	r0, r0, r3, lsl #9
+ 359              	.LVL34:
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 360              		.loc 1 407 5 is_stmt 1 view .LVU84
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 361              		.loc 1 407 31 is_stmt 0 view .LVU85
+ 362 003a 237A     		ldrb	r3, [r4, #8]	@ zero_extendqisi2
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 363              		.loc 1 407 7 view .LVU86
+ 364 003c 4BB1     		cbz	r3, .L18
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 365              		.loc 1 407 57 discriminator 1 view .LVU87
+ 366 003e AA7D     		ldrb	r2, [r5, #22]	@ zero_extendqisi2
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 367              		.loc 1 407 95 discriminator 1 view .LVU88
+ 368 0040 637A     		ldrb	r3, [r4, #9]	@ zero_extendqisi2
+ 407:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 369              		.loc 1 407 47 discriminator 1 view .LVU89
+ARM GAS  /tmp/cc2yCkBP.s 			page 15
+
+
+ 370 0042 9A42     		cmp	r2, r3
+ 371 0044 05D2     		bcs	.L18
+ 409:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 372              		.loc 1 409 9 is_stmt 1 view .LVU90
+ 409:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 373              		.loc 1 409 11 is_stmt 0 view .LVU91
+ 374 0046 9B1A     		subs	r3, r3, r2
+ 375 0048 13F0010F 		tst	r3, #1
+ 376 004c 01D1     		bne	.L18
+ 413:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 377              		.loc 1 413 13 is_stmt 1 view .LVU92
+ 413:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 378              		.loc 1 413 18 is_stmt 0 view .LVU93
+ 379 004e 00F58070 		add	r0, r0, #256
+ 380              	.LVL35:
+ 417:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 381              		.loc 1 417 5 is_stmt 1 view .LVU94
+ 382              	.L18:
+ 418:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 383              		.loc 1 418 1 is_stmt 0 view .LVU95
+ 384 0052 38BD     		pop	{r3, r4, r5, pc}
+ 385              	.LVL36:
+ 386              	.L22:
+ 397:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     uint32_t grid_offset        = ( 1 + ( state->hop_params.n_grid % 2 ) ) * ( nb_channel_in_grid /
+ 387              		.loc 1 397 67 discriminator 2 view .LVU96
+ 388 0054 3423     		movs	r3, #52
+ 389 0056 DEE7     		b	.L19
+ 390              	.LVL37:
+ 391              	.L25:
+ 392              	.LBB7:
+ 393              	.LBB6:
+ 394              		.loc 1 422 107 discriminator 1 view .LVU97
+ 395 0058 4FF48051 		mov	r1, #4096
+ 396 005c E5E7     		b	.L20
+ 397              	.LBE6:
+ 398              	.LBE7:
+ 399              		.cfi_endproc
+ 400              	.LFE881:
+ 402              		.section	.text.wl_lr_fhss_process_parameters,"ax",%progbits
+ 403              		.align	1
+ 404              		.global	wl_lr_fhss_process_parameters
+ 405              		.syntax unified
+ 406              		.thumb
+ 407              		.thumb_func
+ 409              	wl_lr_fhss_process_parameters:
+ 410              	.LVL38:
+ 411              	.LFB873:
+ 152:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     lr_fhss_process_parameters( &params->lr_fhss_params, payload_length, &state->digest );
+ 412              		.loc 1 152 1 is_stmt 1 view -0
+ 413              		.cfi_startproc
+ 414              		@ args = 0, pretend = 0, frame = 0
+ 415              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     lr_fhss_process_parameters( &params->lr_fhss_params, payload_length, &state->digest );
+ 416              		.loc 1 152 1 is_stmt 0 view .LVU99
+ 417 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 418              		.cfi_def_cfa_offset 24
+ 419              		.cfi_offset 4, -24
+ARM GAS  /tmp/cc2yCkBP.s 			page 16
+
+
+ 420              		.cfi_offset 5, -20
+ 421              		.cfi_offset 6, -16
+ 422              		.cfi_offset 7, -12
+ 423              		.cfi_offset 8, -8
+ 424              		.cfi_offset 14, -4
+ 425 0004 0546     		mov	r5, r0
+ 426 0006 0E46     		mov	r6, r1
+ 427 0008 1146     		mov	r1, r2
+ 428              	.LVL39:
+ 152:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     lr_fhss_process_parameters( &params->lr_fhss_params, payload_length, &state->digest );
+ 429              		.loc 1 152 1 view .LVU100
+ 430 000a 1C46     		mov	r4, r3
+ 153:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 431              		.loc 1 153 5 is_stmt 1 view .LVU101
+ 432 000c 03F10802 		add	r2, r3, #8
+ 433              	.LVL40:
+ 153:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 434              		.loc 1 153 5 is_stmt 0 view .LVU102
+ 435 0010 FFF7FEFF 		bl	lr_fhss_process_parameters
+ 436              	.LVL41:
+ 155:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 437              		.loc 1 155 5 is_stmt 1 view .LVU103
+ 155:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 438              		.loc 1 155 22 is_stmt 0 view .LVU104
+ 439 0014 2389     		ldrh	r3, [r4, #8]
+ 155:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 440              		.loc 1 155 7 view .LVU105
+ 441 0016 FF2B     		cmp	r3, #255
+ 442 0018 35D8     		bhi	.L33
+ 159:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 443              		.loc 1 159 5 is_stmt 1 view .LVU106
+ 159:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 444              		.loc 1 159 31 is_stmt 0 view .LVU107
+ 445 001a AA79     		ldrb	r2, [r5, #6]	@ zero_extendqisi2
+ 159:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 446              		.loc 1 159 7 view .LVU108
+ 447 001c 42B9     		cbnz	r2, .L28
+ 161:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 448              		.loc 1 161 9 is_stmt 1 view .LVU109
+ 161:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 449              		.loc 1 161 19 is_stmt 0 view .LVU110
+ 450 001e 95F91030 		ldrsb	r3, [r5, #16]
+ 161:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 451              		.loc 1 161 40 view .LVU111
+ 452 0022 1A33     		adds	r3, r3, #26
+ 453 0024 DBB2     		uxtb	r3, r3
+ 161:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 454              		.loc 1 161 11 view .LVU112
+ 455 0026 332B     		cmp	r3, #51
+ 456 0028 30D8     		bhi	.L34
+ 165:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 457              		.loc 1 165 9 is_stmt 1 view .LVU113
+ 165:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 458              		.loc 1 165 35 is_stmt 0 view .LVU114
+ 459 002a EB79     		ldrb	r3, [r5, #7]	@ zero_extendqisi2
+ 165:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 460              		.loc 1 165 11 view .LVU115
+ARM GAS  /tmp/cc2yCkBP.s 			page 17
+
+
+ 461 002c 052B     		cmp	r3, #5
+ 462 002e 30D9     		bls	.L35
+ 463              	.L28:
+ 170:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 464              		.loc 1 170 5 is_stmt 1 view .LVU116
+ 170:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 465              		.loc 1 170 7 is_stmt 0 view .LVU117
+ 466 0030 012A     		cmp	r2, #1
+ 467 0032 05D1     		bne	.L29
+ 172:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 468              		.loc 1 172 9 is_stmt 1 view .LVU118
+ 172:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 469              		.loc 1 172 19 is_stmt 0 view .LVU119
+ 470 0034 95F91030 		ldrsb	r3, [r5, #16]
+ 172:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 471              		.loc 1 172 39 view .LVU120
+ 472 0038 0433     		adds	r3, r3, #4
+ 473 003a DBB2     		uxtb	r3, r3
+ 172:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 474              		.loc 1 172 11 view .LVU121
+ 475 003c 072B     		cmp	r3, #7
+ 476 003e 2BD8     		bhi	.L36
+ 477              	.L29:
+ 179:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status =
+ 478              		.loc 1 179 5 is_stmt 1 view .LVU122
+ 179:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status =
+ 479              		.loc 1 179 24 is_stmt 0 view .LVU123
+ 480 0040 0023     		movs	r3, #0
+ 481 0042 A375     		strb	r3, [r4, #22]
+ 180:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         lr_fhss_get_hop_params( &params->lr_fhss_params, &state->hop_params, &state->lfsr_state, ho
+ 482              		.loc 1 180 5 is_stmt 1 view .LVU124
+ 181:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 483              		.loc 1 181 9 is_stmt 0 view .LVU125
+ 484 0044 04F11407 		add	r7, r4, #20
+ 485 0048 3346     		mov	r3, r6
+ 486 004a 3A46     		mov	r2, r7
+ 487 004c 2146     		mov	r1, r4
+ 488 004e 2846     		mov	r0, r5
+ 489 0050 FFF7FEFF 		bl	lr_fhss_get_hop_params
+ 490              	.LVL42:
+ 182:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 491              		.loc 1 182 5 is_stmt 1 view .LVU126
+ 182:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 492              		.loc 1 182 7 is_stmt 0 view .LVU127
+ 493 0054 8046     		mov	r8, r0
+ 494 0056 30B9     		cbnz	r0, .L27
+ 188:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 495              		.loc 1 188 5 is_stmt 1 view .LVU128
+ 188:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 496              		.loc 1 188 31 is_stmt 0 view .LVU129
+ 497 0058 2B7A     		ldrb	r3, [r5, #8]	@ zero_extendqisi2
+ 188:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 498              		.loc 1 188 7 view .LVU130
+ 499 005a 93B9     		cbnz	r3, .L37
+ 500              	.LVL43:
+ 501              	.L31:
+ 196:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ARM GAS  /tmp/cc2yCkBP.s 			page 18
+
+
+ 502              		.loc 1 196 5 is_stmt 1 view .LVU131
+ 196:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 503              		.loc 1 196 37 is_stmt 0 view .LVU132
+ 504 005c 2146     		mov	r1, r4
+ 505 005e 2846     		mov	r0, r5
+ 506 0060 FFF7FEFF 		bl	wl_lr_fhss_get_next_freq_in_pll_steps
+ 507              	.LVL44:
+ 196:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     return RADIO_STATUS_OK;
+ 508              		.loc 1 196 35 discriminator 1 view .LVU133
+ 509 0064 2061     		str	r0, [r4, #16]
+ 197:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 510              		.loc 1 197 5 is_stmt 1 view .LVU134
+ 511              	.LVL45:
+ 512              	.L27:
+ 198:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 513              		.loc 1 198 1 is_stmt 0 view .LVU135
+ 514 0066 4046     		mov	r0, r8
+ 515 0068 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 516              	.LVL46:
+ 517              	.L32:
+ 518              	.LBB8:
+ 192:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 519              		.loc 1 192 13 is_stmt 1 view .LVU136
+ 520 006c 2146     		mov	r1, r4
+ 521 006e 3846     		mov	r0, r7
+ 522 0070 FFF7FEFF 		bl	lr_fhss_get_next_state
+ 523              	.LVL47:
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 524              		.loc 1 190 70 discriminator 3 view .LVU137
+ 525 0074 0136     		adds	r6, r6, #1
+ 526              	.LVL48:
+ 527              	.L30:
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 528              		.loc 1 190 27 discriminator 1 view .LVU138
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 529              		.loc 1 190 55 is_stmt 0 discriminator 1 view .LVU139
+ 530 0076 6B7A     		ldrb	r3, [r5, #9]	@ zero_extendqisi2
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 531              		.loc 1 190 31 discriminator 1 view .LVU140
+ 532 0078 C3F10403 		rsb	r3, r3, #4
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 533              		.loc 1 190 27 discriminator 1 view .LVU141
+ 534 007c B342     		cmp	r3, r6
+ 535 007e F5DC     		bgt	.L32
+ 536 0080 ECE7     		b	.L31
+ 537              	.LVL49:
+ 538              	.L37:
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 539              		.loc 1 190 18 view .LVU142
+ 540 0082 0026     		movs	r6, #0
+ 541 0084 F7E7     		b	.L30
+ 542              	.LVL50:
+ 543              	.L33:
+ 190:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 544              		.loc 1 190 18 view .LVU143
+ 545              	.LBE8:
+ 157:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ARM GAS  /tmp/cc2yCkBP.s 			page 19
+
+
+ 546              		.loc 1 157 16 view .LVU144
+ 547 0086 4FF00208 		mov	r8, #2
+ 548 008a ECE7     		b	.L27
+ 549              	.L34:
+ 163:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 550              		.loc 1 163 20 view .LVU145
+ 551 008c 4FF00208 		mov	r8, #2
+ 552 0090 E9E7     		b	.L27
+ 553              	.L35:
+ 167:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 554              		.loc 1 167 20 view .LVU146
+ 555 0092 4FF00208 		mov	r8, #2
+ 556 0096 E6E7     		b	.L27
+ 557              	.L36:
+ 174:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 558              		.loc 1 174 20 view .LVU147
+ 559 0098 4FF00208 		mov	r8, #2
+ 560 009c E3E7     		b	.L27
+ 561              		.cfi_endproc
+ 562              	.LFE873:
+ 564              		.section	.text.wl_lr_fhss_write_hop_sequence_head,"ax",%progbits
+ 565              		.align	1
+ 566              		.global	wl_lr_fhss_write_hop_sequence_head
+ 567              		.syntax unified
+ 568              		.thumb
+ 569              		.thumb_func
+ 571              	wl_lr_fhss_write_hop_sequence_head:
+ 572              	.LVL51:
+ 573              	.LFB874:
+ 202:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_write_hop_config( state->digest.nb_bytes, state->digest.nb_h
+ 574              		.loc 1 202 1 is_stmt 1 view -0
+ 575              		.cfi_startproc
+ 576              		@ args = 0, pretend = 0, frame = 0
+ 577              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_write_hop_config( state->digest.nb_bytes, state->digest.nb_h
+ 578              		.loc 1 202 1 is_stmt 0 view .LVU149
+ 579 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 580              		.cfi_def_cfa_offset 24
+ 581              		.cfi_offset 4, -24
+ 582              		.cfi_offset 5, -20
+ 583              		.cfi_offset 6, -16
+ 584              		.cfi_offset 7, -12
+ 585              		.cfi_offset 8, -8
+ 586              		.cfi_offset 14, -4
+ 587 0004 0546     		mov	r5, r0
+ 588 0006 0C46     		mov	r4, r1
+ 203:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 589              		.loc 1 203 5 is_stmt 1 view .LVU150
+ 203:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 590              		.loc 1 203 29 is_stmt 0 view .LVU151
+ 591 0008 097B     		ldrb	r1, [r1, #12]	@ zero_extendqisi2
+ 592              	.LVL52:
+ 203:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 593              		.loc 1 203 29 view .LVU152
+ 594 000a 207A     		ldrb	r0, [r4, #8]	@ zero_extendqisi2
+ 595              	.LVL53:
+ 203:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ARM GAS  /tmp/cc2yCkBP.s 			page 20
+
+
+ 596              		.loc 1 203 29 view .LVU153
+ 597 000c FFF7FEFF 		bl	wl_lr_fhss_write_hop_config
+ 598              	.LVL54:
+ 204:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 599              		.loc 1 204 5 is_stmt 1 view .LVU154
+ 204:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 600              		.loc 1 204 7 is_stmt 0 view .LVU155
+ 601 0010 0646     		mov	r6, r0
+ 602 0012 A0B9     		cbnz	r0, .L40
+ 209:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 603              		.loc 1 209 5 is_stmt 1 view .LVU156
+ 604              	.LVL55:
+ 211:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 605              		.loc 1 211 5 view .LVU157
+ 211:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 606              		.loc 1 211 31 is_stmt 0 view .LVU158
+ 607 0014 2B7A     		ldrb	r3, [r5, #8]	@ zero_extendqisi2
+ 211:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 608              		.loc 1 211 7 view .LVU159
+ 609 0016 23B1     		cbz	r3, .L51
+ 610              	.LBB9:
+ 228:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( truncated_hops > WL_LR_FHSS_HOP_TABLE_SIZE )
+ 611              		.loc 1 228 9 is_stmt 1 view .LVU160
+ 228:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( truncated_hops > WL_LR_FHSS_HOP_TABLE_SIZE )
+ 612              		.loc 1 228 17 is_stmt 0 view .LVU161
+ 613 0018 277B     		ldrb	r7, [r4, #12]	@ zero_extendqisi2
+ 614              	.LVL56:
+ 229:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 615              		.loc 1 229 9 is_stmt 1 view .LVU162
+ 229:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 616              		.loc 1 229 11 is_stmt 0 view .LVU163
+ 617 001a 102F     		cmp	r7, #16
+ 618 001c 28D9     		bls	.L46
+ 231:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 619              		.loc 1 231 28 view .LVU164
+ 620 001e 1027     		movs	r7, #16
+ 621              	.LVL57:
+ 231:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 622              		.loc 1 231 28 view .LVU165
+ 623 0020 26E0     		b	.L46
+ 624              	.LVL58:
+ 625              	.L51:
+ 231:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 626              		.loc 1 231 28 view .LVU166
+ 627              	.LBE9:
+ 628              	.LBB12:
+ 215:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 629              		.loc 1 215 9 is_stmt 1 view .LVU167
+ 215:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 630              		.loc 1 215 50 is_stmt 0 view .LVU168
+ 631 0022 6189     		ldrh	r1, [r4, #10]
+ 215:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 632              		.loc 1 215 24 view .LVU169
+ 633 0024 0131     		adds	r1, r1, #1
+ 634              	.LVL59:
+ 217:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( status != RADIO_STATUS_OK )
+ 635              		.loc 1 217 9 is_stmt 1 view .LVU170
+ARM GAS  /tmp/cc2yCkBP.s 			page 21
+
+
+ 217:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( status != RADIO_STATUS_OK )
+ 636              		.loc 1 217 18 is_stmt 0 view .LVU171
+ 637 0026 2269     		ldr	r2, [r4, #16]
+ 638 0028 89B2     		uxth	r1, r1
+ 217:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( status != RADIO_STATUS_OK )
+ 639              		.loc 1 217 18 view .LVU172
+ 640 002a A07D     		ldrb	r0, [r4, #22]	@ zero_extendqisi2
+ 641              	.LVL60:
+ 217:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( status != RADIO_STATUS_OK )
+ 642              		.loc 1 217 18 view .LVU173
+ 643 002c FFF7FEFF 		bl	wl_lr_fhss_write_hop
+ 644              	.LVL61:
+ 218:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 645              		.loc 1 218 9 is_stmt 1 view .LVU174
+ 218:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 646              		.loc 1 218 11 is_stmt 0 view .LVU175
+ 647 0030 0646     		mov	r6, r0
+ 648 0032 20B9     		cbnz	r0, .L40
+ 222:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits = 0;
+ 649              		.loc 1 222 9 is_stmt 1 view .LVU176
+ 222:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits = 0;
+ 650              		.loc 1 222 14 is_stmt 0 view .LVU177
+ 651 0034 A37D     		ldrb	r3, [r4, #22]	@ zero_extendqisi2
+ 222:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits = 0;
+ 652              		.loc 1 222 27 view .LVU178
+ 653 0036 0133     		adds	r3, r3, #1
+ 654 0038 A375     		strb	r3, [r4, #22]
+ 223:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 655              		.loc 1 223 9 is_stmt 1 view .LVU179
+ 223:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 656              		.loc 1 223 31 is_stmt 0 view .LVU180
+ 657 003a 0023     		movs	r3, #0
+ 658 003c 6381     		strh	r3, [r4, #10]	@ movhi
+ 659              	.LVL62:
+ 660              	.L40:
+ 223:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 661              		.loc 1 223 31 view .LVU181
+ 662              	.LBE12:
+ 274:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 663              		.loc 1 274 1 view .LVU182
+ 664 003e 3046     		mov	r0, r6
+ 665 0040 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 666              	.LVL63:
+ 667              	.L44:
+ 668              	.LBB13:
+ 669              	.LBB10:
+ 251:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 670              		.loc 1 251 18 is_stmt 1 view .LVU183
+ 251:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 671              		.loc 1 251 20 is_stmt 0 view .LVU184
+ 672 0044 10B3     		cbz	r0, .L49
+ 253:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             }
+ 673              		.loc 1 253 28 view .LVU185
+ 674 0046 4FF07208 		mov	r8, #114
+ 675              	.L45:
+ 676              	.LVL64:
+ 260:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             if( status != RADIO_STATUS_OK )
+ARM GAS  /tmp/cc2yCkBP.s 			page 22
+
+
+ 677              		.loc 1 260 13 is_stmt 1 view .LVU186
+ 260:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             if( status != RADIO_STATUS_OK )
+ 678              		.loc 1 260 22 is_stmt 0 view .LVU187
+ 679 004a 2269     		ldr	r2, [r4, #16]
+ 680 004c 4146     		mov	r1, r8
+ 681 004e FFF7FEFF 		bl	wl_lr_fhss_write_hop
+ 682              	.LVL65:
+ 261:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 683              		.loc 1 261 13 is_stmt 1 view .LVU188
+ 261:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 684              		.loc 1 261 15 is_stmt 0 view .LVU189
+ 685 0052 0646     		mov	r6, r0
+ 686 0054 0028     		cmp	r0, #0
+ 687 0056 F2D1     		bne	.L40
+ 266:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             state->digest.nb_bits -= nb_symbols;
+ 688              		.loc 1 266 13 is_stmt 1 view .LVU190
+ 266:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             state->digest.nb_bits -= nb_symbols;
+ 689              		.loc 1 266 18 is_stmt 0 view .LVU191
+ 690 0058 A37D     		ldrb	r3, [r4, #22]	@ zero_extendqisi2
+ 266:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             state->digest.nb_bits -= nb_symbols;
+ 691              		.loc 1 266 31 view .LVU192
+ 692 005a 0133     		adds	r3, r3, #1
+ 693 005c A375     		strb	r3, [r4, #22]
+ 267:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 694              		.loc 1 267 13 is_stmt 1 view .LVU193
+ 267:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 695              		.loc 1 267 26 is_stmt 0 view .LVU194
+ 696 005e 6189     		ldrh	r1, [r4, #10]
+ 267:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 697              		.loc 1 267 35 view .LVU195
+ 698 0060 A1EB0801 		sub	r1, r1, r8
+ 699 0064 6181     		strh	r1, [r4, #10]	@ movhi
+ 269:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 700              		.loc 1 269 13 is_stmt 1 view .LVU196
+ 269:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 701              		.loc 1 269 45 is_stmt 0 view .LVU197
+ 702 0066 2146     		mov	r1, r4
+ 703 0068 2846     		mov	r0, r5
+ 704              	.LVL66:
+ 269:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 705              		.loc 1 269 45 view .LVU198
+ 706 006a FFF7FEFF 		bl	wl_lr_fhss_get_next_freq_in_pll_steps
+ 707              	.LVL67:
+ 269:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 708              		.loc 1 269 43 discriminator 1 view .LVU199
+ 709 006e 2061     		str	r0, [r4, #16]
+ 710              	.LVL68:
+ 711              	.L46:
+ 269:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 712              		.loc 1 269 43 discriminator 1 view .LVU200
+ 713              	.LBE10:
+ 234:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 714              		.loc 1 234 35 is_stmt 1 view .LVU201
+ 234:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 715              		.loc 1 234 21 is_stmt 0 view .LVU202
+ 716 0070 A07D     		ldrb	r0, [r4, #22]	@ zero_extendqisi2
+ 234:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ARM GAS  /tmp/cc2yCkBP.s 			page 23
+
+
+ 717              		.loc 1 234 35 view .LVU203
+ 718 0072 B842     		cmp	r0, r7
+ 719 0074 E3D2     		bcs	.L40
+ 720              	.LBB11:
+ 236:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 721              		.loc 1 236 13 is_stmt 1 view .LVU204
+ 240:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 722              		.loc 1 240 13 view .LVU205
+ 240:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 723              		.loc 1 240 61 is_stmt 0 view .LVU206
+ 724 0076 6B7A     		ldrb	r3, [r5, #9]	@ zero_extendqisi2
+ 240:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             {
+ 725              		.loc 1 240 15 view .LVU207
+ 726 0078 8342     		cmp	r3, r0
+ 727 007a E3D8     		bhi	.L44
+ 242:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 {
+ 728              		.loc 1 242 17 is_stmt 1 view .LVU208
+ 242:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 {
+ 729              		.loc 1 242 34 is_stmt 0 view .LVU209
+ 730 007c B4F80A80 		ldrh	r8, [r4, #10]
+ 242:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 {
+ 731              		.loc 1 242 19 view .LVU210
+ 732 0080 B8F1320F 		cmp	r8, #50
+ 733 0084 E1D9     		bls	.L45
+ 244:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                 }
+ 734              		.loc 1 244 32 view .LVU211
+ 735 0086 4FF03208 		mov	r8, #50
+ 736 008a DEE7     		b	.L45
+ 737              	.L49:
+ 257:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****             }
+ 738              		.loc 1 257 28 view .LVU212
+ 739 008c 4FF07308 		mov	r8, #115
+ 740 0090 DBE7     		b	.L45
+ 741              	.LBE11:
+ 742              	.LBE13:
+ 743              		.cfi_endproc
+ 744              	.LFE874:
+ 746              		.section	.text.wl_lr_fhss_build_frame,"ax",%progbits
+ 747              		.align	1
+ 748              		.global	wl_lr_fhss_build_frame
+ 749              		.syntax unified
+ 750              		.thumb
+ 751              		.thumb_func
+ 753              	wl_lr_fhss_build_frame:
+ 754              	.LVL69:
+ 755              	.LFB876:
+ 288:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_process_parameters( params, hop_sequence_id, payload_length,
+ 756              		.loc 1 288 1 is_stmt 1 view -0
+ 757              		.cfi_startproc
+ 758              		@ args = 8, pretend = 0, frame = 256
+ 759              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_process_parameters( params, hop_sequence_id, payload_length,
+ 760              		.loc 1 288 1 is_stmt 0 view .LVU214
+ 761 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 762              		.cfi_def_cfa_offset 24
+ 763              		.cfi_offset 4, -24
+ 764              		.cfi_offset 5, -20
+ARM GAS  /tmp/cc2yCkBP.s 			page 24
+
+
+ 765              		.cfi_offset 6, -16
+ 766              		.cfi_offset 7, -12
+ 767              		.cfi_offset 8, -8
+ 768              		.cfi_offset 14, -4
+ 769 0004 C2B0     		sub	sp, sp, #264
+ 770              		.cfi_def_cfa_offset 288
+ 771 0006 0546     		mov	r5, r0
+ 772 0008 0C46     		mov	r4, r1
+ 773 000a 1146     		mov	r1, r2
+ 774              	.LVL70:
+ 288:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     radio_status_t status = wl_lr_fhss_process_parameters( params, hop_sequence_id, payload_length,
+ 775              		.loc 1 288 1 view .LVU215
+ 776 000c 1F46     		mov	r7, r3
+ 777 000e BDF82081 		ldrh	r8, [sp, #288]
+ 778 0012 499E     		ldr	r6, [sp, #292]
+ 289:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 779              		.loc 1 289 5 is_stmt 1 view .LVU216
+ 289:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 780              		.loc 1 289 29 is_stmt 0 view .LVU217
+ 781 0014 2346     		mov	r3, r4
+ 782              	.LVL71:
+ 289:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 783              		.loc 1 289 29 view .LVU218
+ 784 0016 4246     		mov	r2, r8
+ 785              	.LVL72:
+ 289:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 786              		.loc 1 289 29 view .LVU219
+ 787 0018 FFF7FEFF 		bl	wl_lr_fhss_process_parameters
+ 788              	.LVL73:
+ 290:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 789              		.loc 1 290 5 is_stmt 1 view .LVU220
+ 290:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 790              		.loc 1 290 7 is_stmt 0 view .LVU221
+ 791 001c 0146     		mov	r1, r0
+ 792 001e 80B9     		cbnz	r0, .L53
+ 295:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 793              		.loc 1 295 5 is_stmt 1 view .LVU222
+ 295:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 794              		.loc 1 295 7 is_stmt 0 view .LVU223
+ 795 0020 0EB1     		cbz	r6, .L54
+ 297:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 796              		.loc 1 297 9 is_stmt 1 view .LVU224
+ 297:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 797              		.loc 1 297 46 is_stmt 0 view .LVU225
+ 798 0022 2369     		ldr	r3, [r4, #16]
+ 297:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 799              		.loc 1 297 39 view .LVU226
+ 800 0024 3360     		str	r3, [r6]
+ 801              	.L54:
+ 300:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     lr_fhss_build_frame( &params->lr_fhss_params, state->hop_params.hop_sequence_id, payload, paylo
+ 802              		.loc 1 300 5 is_stmt 1 view .LVU227
+ 301:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                          tx_buffer );
+ 803              		.loc 1 301 5 view .LVU228
+ 804 0026 02AE     		add	r6, sp, #8
+ 805 0028 0096     		str	r6, [sp]
+ 806 002a 4346     		mov	r3, r8
+ 807 002c 3A46     		mov	r2, r7
+ARM GAS  /tmp/cc2yCkBP.s 			page 25
+
+
+ 808 002e E188     		ldrh	r1, [r4, #6]
+ 809 0030 2846     		mov	r0, r5
+ 810              	.LVL74:
+ 301:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                          tx_buffer );
+ 811              		.loc 1 301 5 is_stmt 0 view .LVU229
+ 812 0032 FFF7FEFF 		bl	lr_fhss_build_frame
+ 813              	.LVL75:
+ 304:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 814              		.loc 1 304 5 is_stmt 1 view .LVU230
+ 304:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( status != RADIO_STATUS_OK )
+ 815              		.loc 1 304 14 is_stmt 0 view .LVU231
+ 816 0036 3146     		mov	r1, r6
+ 817 0038 2046     		mov	r0, r4
+ 818 003a FFF7FEFF 		bl	wl_lr_fhss_write_payload
+ 819              	.LVL76:
+ 305:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 820              		.loc 1 305 5 is_stmt 1 view .LVU232
+ 305:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 821              		.loc 1 305 7 is_stmt 0 view .LVU233
+ 822 003e 0146     		mov	r1, r0
+ 823 0040 18B1     		cbz	r0, .L56
+ 824              	.LVL77:
+ 825              	.L53:
+ 312:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 826              		.loc 1 312 1 view .LVU234
+ 827 0042 0846     		mov	r0, r1
+ 828 0044 42B0     		add	sp, sp, #264
+ 829              		.cfi_remember_state
+ 830              		.cfi_def_cfa_offset 24
+ 831              		@ sp needed
+ 832 0046 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 833              	.LVL78:
+ 834              	.L56:
+ 835              		.cfi_restore_state
+ 309:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 836              		.loc 1 309 5 is_stmt 1 view .LVU235
+ 309:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 837              		.loc 1 309 14 is_stmt 0 view .LVU236
+ 838 004a 2146     		mov	r1, r4
+ 839 004c 2846     		mov	r0, r5
+ 840              	.LVL79:
+ 309:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 841              		.loc 1 309 14 view .LVU237
+ 842 004e FFF7FEFF 		bl	wl_lr_fhss_write_hop_sequence_head
+ 843              	.LVL80:
+ 844 0052 0146     		mov	r1, r0
+ 845              	.LVL81:
+ 311:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 846              		.loc 1 311 5 is_stmt 1 view .LVU238
+ 311:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 847              		.loc 1 311 12 is_stmt 0 view .LVU239
+ 848 0054 F5E7     		b	.L53
+ 849              		.cfi_endproc
+ 850              	.LFE876:
+ 852              		.section	.text.wl_lr_fhss_handle_hop,"ax",%progbits
+ 853              		.align	1
+ 854              		.global	wl_lr_fhss_handle_hop
+ARM GAS  /tmp/cc2yCkBP.s 			page 26
+
+
+ 855              		.syntax unified
+ 856              		.thumb
+ 857              		.thumb_func
+ 859              	wl_lr_fhss_handle_hop:
+ 860              	.LVL82:
+ 861              	.LFB877:
+ 316:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( state->current_hop < state->digest.nb_hops )
+ 862              		.loc 1 316 1 is_stmt 1 view -0
+ 863              		.cfi_startproc
+ 864              		@ args = 0, pretend = 0, frame = 0
+ 865              		@ frame_needed = 0, uses_anonymous_args = 0
+ 316:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     if( state->current_hop < state->digest.nb_hops )
+ 866              		.loc 1 316 1 is_stmt 0 view .LVU241
+ 867 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 868              		.cfi_def_cfa_offset 24
+ 869              		.cfi_offset 3, -24
+ 870              		.cfi_offset 4, -20
+ 871              		.cfi_offset 5, -16
+ 872              		.cfi_offset 6, -12
+ 873              		.cfi_offset 7, -8
+ 874              		.cfi_offset 14, -4
+ 875 0002 0646     		mov	r6, r0
+ 317:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 876              		.loc 1 317 5 is_stmt 1 view .LVU242
+ 317:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 877              		.loc 1 317 14 is_stmt 0 view .LVU243
+ 878 0004 887D     		ldrb	r0, [r1, #22]	@ zero_extendqisi2
+ 879              	.LVL83:
+ 317:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 880              		.loc 1 317 43 view .LVU244
+ 881 0006 0A7B     		ldrb	r2, [r1, #12]	@ zero_extendqisi2
+ 317:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     {
+ 882              		.loc 1 317 7 view .LVU245
+ 883 0008 9042     		cmp	r0, r2
+ 884 000a 18D2     		bcs	.L60
+ 885 000c 0C46     		mov	r4, r1
+ 886              	.LBB14:
+ 319:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         if( state->digest.nb_bits > LR_FHSS_BLOCK_BITS )
+ 887              		.loc 1 319 9 is_stmt 1 view .LVU246
+ 320:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 888              		.loc 1 320 9 view .LVU247
+ 320:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 889              		.loc 1 320 26 is_stmt 0 view .LVU248
+ 890 000e 4F89     		ldrh	r7, [r1, #10]
+ 320:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 891              		.loc 1 320 11 view .LVU249
+ 892 0010 322F     		cmp	r7, #50
+ 893 0012 00D9     		bls	.L59
+ 322:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         }
+ 894              		.loc 1 322 21 view .LVU250
+ 895 0014 3227     		movs	r7, #50
+ 896              	.L59:
+ 897              	.LVL84:
+ 328:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                       LR_FHSS_BLOCK_BITS, state->next_freq_in_pll_s
+ 898              		.loc 1 328 9 is_stmt 1 view .LVU251
+ 328:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                       LR_FHSS_BLOCK_BITS, state->next_freq_in_pll_s
+ 899              		.loc 1 328 33 is_stmt 0 view .LVU252
+ARM GAS  /tmp/cc2yCkBP.s 			page 27
+
+
+ 900 0016 2269     		ldr	r2, [r4, #16]
+ 901 0018 3221     		movs	r1, #50
+ 902              	.LVL85:
+ 328:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****                                                       LR_FHSS_BLOCK_BITS, state->next_freq_in_pll_s
+ 903              		.loc 1 328 33 view .LVU253
+ 904 001a 00F00F00 		and	r0, r0, #15
+ 905 001e FFF7FEFF 		bl	wl_lr_fhss_write_hop
+ 906              	.LVL86:
+ 330:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 907              		.loc 1 330 9 is_stmt 1 view .LVU254
+ 330:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         {
+ 908              		.loc 1 330 11 is_stmt 0 view .LVU255
+ 909 0022 0546     		mov	r5, r0
+ 910 0024 60B9     		cbnz	r0, .L58
+ 335:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits -= nb_bits;
+ 911              		.loc 1 335 9 is_stmt 1 view .LVU256
+ 335:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits -= nb_bits;
+ 912              		.loc 1 335 14 is_stmt 0 view .LVU257
+ 913 0026 A37D     		ldrb	r3, [r4, #22]	@ zero_extendqisi2
+ 335:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->digest.nb_bits -= nb_bits;
+ 914              		.loc 1 335 27 view .LVU258
+ 915 0028 0133     		adds	r3, r3, #1
+ 916 002a A375     		strb	r3, [r4, #22]
+ 336:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->next_freq_in_pll_steps = wl_lr_fhss_get_next_freq_in_pll_steps( params, state );
+ 917              		.loc 1 336 9 is_stmt 1 view .LVU259
+ 336:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->next_freq_in_pll_steps = wl_lr_fhss_get_next_freq_in_pll_steps( params, state );
+ 918              		.loc 1 336 22 is_stmt 0 view .LVU260
+ 919 002c 6389     		ldrh	r3, [r4, #10]
+ 336:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****         state->next_freq_in_pll_steps = wl_lr_fhss_get_next_freq_in_pll_steps( params, state );
+ 920              		.loc 1 336 31 view .LVU261
+ 921 002e DB1B     		subs	r3, r3, r7
+ 922 0030 6381     		strh	r3, [r4, #10]	@ movhi
+ 337:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 923              		.loc 1 337 9 is_stmt 1 view .LVU262
+ 337:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 924              		.loc 1 337 41 is_stmt 0 view .LVU263
+ 925 0032 2146     		mov	r1, r4
+ 926 0034 3046     		mov	r0, r6
+ 927              	.LVL87:
+ 337:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 928              		.loc 1 337 41 view .LVU264
+ 929 0036 FFF7FEFF 		bl	wl_lr_fhss_get_next_freq_in_pll_steps
+ 930              	.LVL88:
+ 337:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 931              		.loc 1 337 39 discriminator 1 view .LVU265
+ 932 003a 2061     		str	r0, [r4, #16]
+ 933 003c 00E0     		b	.L58
+ 934              	.LVL89:
+ 935              	.L60:
+ 337:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c ****     }
+ 936              		.loc 1 337 39 discriminator 1 view .LVU266
+ 937              	.LBE14:
+ 339:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** }
+ 938              		.loc 1 339 12 view .LVU267
+ 939 003e 0025     		movs	r5, #0
+ 940              	.LVL90:
+ 941              	.L58:
+ARM GAS  /tmp/cc2yCkBP.s 			page 28
+
+
+ 340:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 942              		.loc 1 340 1 view .LVU268
+ 943 0040 2846     		mov	r0, r5
+ 944 0042 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 340:Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.c **** 
+ 945              		.loc 1 340 1 view .LVU269
+ 946              		.cfi_endproc
+ 947              	.LFE877:
+ 949              		.text
+ 950              	.Letext0:
+ 951              		.file 2 "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-
+ 952              		.file 3 "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-
+ 953              		.file 4 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_subghz.h"
+ 954              		.file 5 "Middlewares/Third_Party/SubGHz_Phy/radio_driver/radio_driver.h"
+ 955              		.file 6 "Middlewares/Third_Party/SubGHz_Phy/radio_driver/radio_def.h"
+ 956              		.file 7 "Middlewares/Third_Party/SubGHz_Phy/radio_driver/lr_fhss_v1_base_types.h"
+ 957              		.file 8 "Middlewares/Third_Party/SubGHz_Phy/radio_driver/lr_fhss_mac.h"
+ 958              		.file 9 "Middlewares/Third_Party/SubGHz_Phy/radio_driver/wl_lr_fhss.h"
+ 959              		.file 10 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h"
+ARM GAS  /tmp/cc2yCkBP.s 			page 29
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 wl_lr_fhss.c
+     /tmp/cc2yCkBP.s:19     .text.wl_lr_fhss_init:00000000 $t
+     /tmp/cc2yCkBP.s:25     .text.wl_lr_fhss_init:00000000 wl_lr_fhss_init
+     /tmp/cc2yCkBP.s:84     .text.wl_lr_fhss_init:00000038 $d
+     /tmp/cc2yCkBP.s:89     .text.wl_lr_fhss_write_payload:00000000 $t
+     /tmp/cc2yCkBP.s:95     .text.wl_lr_fhss_write_payload:00000000 wl_lr_fhss_write_payload
+     /tmp/cc2yCkBP.s:122    .text.wl_lr_fhss_handle_tx_done:00000000 $t
+     /tmp/cc2yCkBP.s:128    .text.wl_lr_fhss_handle_tx_done:00000000 wl_lr_fhss_handle_tx_done
+     /tmp/cc2yCkBP.s:157    .text.wl_lr_fhss_write_hop_config:00000000 $t
+     /tmp/cc2yCkBP.s:163    .text.wl_lr_fhss_write_hop_config:00000000 wl_lr_fhss_write_hop_config
+     /tmp/cc2yCkBP.s:203    .text.wl_lr_fhss_write_hop:00000000 $t
+     /tmp/cc2yCkBP.s:209    .text.wl_lr_fhss_write_hop:00000000 wl_lr_fhss_write_hop
+     /tmp/cc2yCkBP.s:280    .text.wl_lr_fhss_get_next_freq_in_pll_steps:00000000 $t
+     /tmp/cc2yCkBP.s:286    .text.wl_lr_fhss_get_next_freq_in_pll_steps:00000000 wl_lr_fhss_get_next_freq_in_pll_steps
+     /tmp/cc2yCkBP.s:403    .text.wl_lr_fhss_process_parameters:00000000 $t
+     /tmp/cc2yCkBP.s:409    .text.wl_lr_fhss_process_parameters:00000000 wl_lr_fhss_process_parameters
+     /tmp/cc2yCkBP.s:565    .text.wl_lr_fhss_write_hop_sequence_head:00000000 $t
+     /tmp/cc2yCkBP.s:571    .text.wl_lr_fhss_write_hop_sequence_head:00000000 wl_lr_fhss_write_hop_sequence_head
+     /tmp/cc2yCkBP.s:747    .text.wl_lr_fhss_build_frame:00000000 $t
+     /tmp/cc2yCkBP.s:753    .text.wl_lr_fhss_build_frame:00000000 wl_lr_fhss_build_frame
+     /tmp/cc2yCkBP.s:853    .text.wl_lr_fhss_handle_hop:00000000 $t
+     /tmp/cc2yCkBP.s:859    .text.wl_lr_fhss_handle_hop:00000000 wl_lr_fhss_handle_hop
+
+UNDEFINED SYMBOLS
+SUBGRF_SetPacketType
+SUBGRF_WriteCommand
+SUBGRF_SetBufferBaseAddress
+SUBGRF_WriteBuffer
+SUBGRF_WriteRegister
+SUBGRF_WriteRegisters
+lr_fhss_get_next_freq_in_grid
+lr_fhss_process_parameters
+lr_fhss_get_hop_params
+lr_fhss_get_next_state
+lr_fhss_build_frame

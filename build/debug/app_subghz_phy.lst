@@ -1,0 +1,142 @@
+ARM GAS  /tmp/cciE8Te9.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"app_subghz_phy.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "SubGHz_Phy/App/app_subghz_phy.c"
+  18              		.section	.text.MX_SubGHz_Phy_Init,"ax",%progbits
+  19              		.align	1
+  20              		.global	MX_SubGHz_Phy_Init
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	MX_SubGHz_Phy_Init:
+  26              	.LFB106:
+   1:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN Header */
+   2:SubGHz_Phy/App/app_subghz_phy.c **** /**
+   3:SubGHz_Phy/App/app_subghz_phy.c ****   ******************************************************************************
+   4:SubGHz_Phy/App/app_subghz_phy.c ****   * @file    app_subghz_phy.c
+   5:SubGHz_Phy/App/app_subghz_phy.c ****   * @author  MCD Application Team
+   6:SubGHz_Phy/App/app_subghz_phy.c ****   * @brief   Application of the SubGHz_Phy Middleware
+   7:SubGHz_Phy/App/app_subghz_phy.c ****   ******************************************************************************
+   8:SubGHz_Phy/App/app_subghz_phy.c ****   * @attention
+   9:SubGHz_Phy/App/app_subghz_phy.c ****   *
+  10:SubGHz_Phy/App/app_subghz_phy.c ****   * Copyright (c) 2026 STMicroelectronics.
+  11:SubGHz_Phy/App/app_subghz_phy.c ****   * All rights reserved.
+  12:SubGHz_Phy/App/app_subghz_phy.c ****   *
+  13:SubGHz_Phy/App/app_subghz_phy.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:SubGHz_Phy/App/app_subghz_phy.c ****   * in the root directory of this software component.
+  15:SubGHz_Phy/App/app_subghz_phy.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:SubGHz_Phy/App/app_subghz_phy.c ****   *
+  17:SubGHz_Phy/App/app_subghz_phy.c ****   ******************************************************************************
+  18:SubGHz_Phy/App/app_subghz_phy.c ****   */
+  19:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END Header */
+  20:SubGHz_Phy/App/app_subghz_phy.c **** 
+  21:SubGHz_Phy/App/app_subghz_phy.c **** /* Includes ------------------------------------------------------------------*/
+  22:SubGHz_Phy/App/app_subghz_phy.c **** #include "app_subghz_phy.h"
+  23:SubGHz_Phy/App/app_subghz_phy.c **** #include "subghz_phy_app.h"
+  24:SubGHz_Phy/App/app_subghz_phy.c **** #include "sys_app.h"
+  25:SubGHz_Phy/App/app_subghz_phy.c **** 
+  26:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN Includes */
+  27:SubGHz_Phy/App/app_subghz_phy.c **** 
+  28:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END Includes */
+  29:SubGHz_Phy/App/app_subghz_phy.c **** 
+  30:SubGHz_Phy/App/app_subghz_phy.c **** /* External variables ---------------------------------------------------------*/
+  31:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN EV */
+  32:SubGHz_Phy/App/app_subghz_phy.c **** 
+ARM GAS  /tmp/cciE8Te9.s 			page 2
+
+
+  33:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END EV */
+  34:SubGHz_Phy/App/app_subghz_phy.c **** 
+  35:SubGHz_Phy/App/app_subghz_phy.c **** /* Private typedef -----------------------------------------------------------*/
+  36:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN PTD */
+  37:SubGHz_Phy/App/app_subghz_phy.c **** 
+  38:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END PTD */
+  39:SubGHz_Phy/App/app_subghz_phy.c **** 
+  40:SubGHz_Phy/App/app_subghz_phy.c **** /* Private define ------------------------------------------------------------*/
+  41:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN PD */
+  42:SubGHz_Phy/App/app_subghz_phy.c **** 
+  43:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END PD */
+  44:SubGHz_Phy/App/app_subghz_phy.c **** 
+  45:SubGHz_Phy/App/app_subghz_phy.c **** /* Private macro -------------------------------------------------------------*/
+  46:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN PM */
+  47:SubGHz_Phy/App/app_subghz_phy.c **** 
+  48:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END PM */
+  49:SubGHz_Phy/App/app_subghz_phy.c **** 
+  50:SubGHz_Phy/App/app_subghz_phy.c **** /* Private variables ---------------------------------------------------------*/
+  51:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN PV */
+  52:SubGHz_Phy/App/app_subghz_phy.c **** 
+  53:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END PV */
+  54:SubGHz_Phy/App/app_subghz_phy.c **** 
+  55:SubGHz_Phy/App/app_subghz_phy.c **** /* Private function prototypes -----------------------------------------------*/
+  56:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE BEGIN PFP */
+  57:SubGHz_Phy/App/app_subghz_phy.c **** 
+  58:SubGHz_Phy/App/app_subghz_phy.c **** /* USER CODE END PFP */
+  59:SubGHz_Phy/App/app_subghz_phy.c **** 
+  60:SubGHz_Phy/App/app_subghz_phy.c **** /* Exported functions --------------------------------------------------------*/
+  61:SubGHz_Phy/App/app_subghz_phy.c **** 
+  62:SubGHz_Phy/App/app_subghz_phy.c **** void MX_SubGHz_Phy_Init(void)
+  63:SubGHz_Phy/App/app_subghz_phy.c **** {
+  27              		.loc 1 63 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+  64:SubGHz_Phy/App/app_subghz_phy.c ****   /* USER CODE BEGIN MX_SubGHz_Phy_Init_1 */
+  65:SubGHz_Phy/App/app_subghz_phy.c **** 
+  66:SubGHz_Phy/App/app_subghz_phy.c ****   /* USER CODE END MX_SubGHz_Phy_Init_1 */
+  67:SubGHz_Phy/App/app_subghz_phy.c ****   SystemApp_Init();
+  35              		.loc 1 67 3 view .LVU1
+  36 0002 FFF7FEFF 		bl	SystemApp_Init
+  37              	.LVL0:
+  68:SubGHz_Phy/App/app_subghz_phy.c ****   /* USER CODE BEGIN MX_SubGHz_Phy_Init_1_1 */
+  69:SubGHz_Phy/App/app_subghz_phy.c **** 
+  70:SubGHz_Phy/App/app_subghz_phy.c ****   /* USER CODE END MX_SubGHz_Phy_Init_1_1 */
+  71:SubGHz_Phy/App/app_subghz_phy.c ****   SubghzApp_Init();
+  38              		.loc 1 71 3 view .LVU2
+  39 0006 FFF7FEFF 		bl	SubghzApp_Init
+  40              	.LVL1:
+  72:SubGHz_Phy/App/app_subghz_phy.c ****   /* USER CODE BEGIN MX_SubGHz_Phy_Init_2 */
+  73:SubGHz_Phy/App/app_subghz_phy.c **** 
+  74:SubGHz_Phy/App/app_subghz_phy.c ****   /* USER CODE END MX_SubGHz_Phy_Init_2 */
+  75:SubGHz_Phy/App/app_subghz_phy.c **** }
+ARM GAS  /tmp/cciE8Te9.s 			page 3
+
+
+  41              		.loc 1 75 1 is_stmt 0 view .LVU3
+  42 000a 08BD     		pop	{r3, pc}
+  43              		.cfi_endproc
+  44              	.LFE106:
+  46              		.text
+  47              	.Letext0:
+  48              		.file 2 "SubGHz_Phy/App/subghz_phy_app.h"
+  49              		.file 3 "Core/Inc/sys_app.h"
+ARM GAS  /tmp/cciE8Te9.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 app_subghz_phy.c
+     /tmp/cciE8Te9.s:19     .text.MX_SubGHz_Phy_Init:00000000 $t
+     /tmp/cciE8Te9.s:25     .text.MX_SubGHz_Phy_Init:00000000 MX_SubGHz_Phy_Init
+
+UNDEFINED SYMBOLS
+SystemApp_Init
+SubghzApp_Init

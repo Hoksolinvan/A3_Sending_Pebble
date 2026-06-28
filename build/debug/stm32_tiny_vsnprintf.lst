@@ -1,0 +1,1736 @@
+ARM GAS  /tmp/ccRzk6gi.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32_tiny_vsnprintf.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Utilities/misc/stm32_tiny_vsnprintf.c"
+  18              		.section	.text.ee_skip_atoi,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	ee_skip_atoi:
+  25              	.LVL0:
+  26              	.LFB0:
+   1:Utilities/misc/stm32_tiny_vsnprintf.c **** /**
+   2:Utilities/misc/stm32_tiny_vsnprintf.c ****  Copyright (C) 2002 Michael Ringgaard. All rights reserved.
+   3:Utilities/misc/stm32_tiny_vsnprintf.c ****  Redistribution and use in source and binary forms, with or without
+   4:Utilities/misc/stm32_tiny_vsnprintf.c ****  modification, are permitted provided that the following conditions
+   5:Utilities/misc/stm32_tiny_vsnprintf.c ****  are met:
+   6:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+   7:Utilities/misc/stm32_tiny_vsnprintf.c ****  1. Redistributions of source code must retain the above copyright
+   8:Utilities/misc/stm32_tiny_vsnprintf.c ****     notice, this list of conditions and the following disclaimer.
+   9:Utilities/misc/stm32_tiny_vsnprintf.c ****  2. Redistributions in binary form must reproduce the above copyright
+  10:Utilities/misc/stm32_tiny_vsnprintf.c ****     notice, this list of conditions and the following disclaimer in the
+  11:Utilities/misc/stm32_tiny_vsnprintf.c ****     documentation and/or other materials provided with the distribution.
+  12:Utilities/misc/stm32_tiny_vsnprintf.c ****  3. Neither the name of the project nor the names of its contributors
+  13:Utilities/misc/stm32_tiny_vsnprintf.c ****     may be used to endorse or promote products derived from this software
+  14:Utilities/misc/stm32_tiny_vsnprintf.c ****     without specific prior written permission.
+  15:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  16:Utilities/misc/stm32_tiny_vsnprintf.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  17:Utilities/misc/stm32_tiny_vsnprintf.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  18:Utilities/misc/stm32_tiny_vsnprintf.c ****  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  19:Utilities/misc/stm32_tiny_vsnprintf.c ****  ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+  20:Utilities/misc/stm32_tiny_vsnprintf.c ****  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  21:Utilities/misc/stm32_tiny_vsnprintf.c ****  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+  22:Utilities/misc/stm32_tiny_vsnprintf.c ****  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  23:Utilities/misc/stm32_tiny_vsnprintf.c ****  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  24:Utilities/misc/stm32_tiny_vsnprintf.c ****  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  25:Utilities/misc/stm32_tiny_vsnprintf.c ****  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  26:Utilities/misc/stm32_tiny_vsnprintf.c ****  SUCH DAMAGE.
+  27:Utilities/misc/stm32_tiny_vsnprintf.c **** */
+  28:Utilities/misc/stm32_tiny_vsnprintf.c **** /**
+  29:Utilities/misc/stm32_tiny_vsnprintf.c ****   ******************************************************************************
+  30:Utilities/misc/stm32_tiny_vsnprintf.c ****   * @file    stm32_tiny_vsnprintf.c
+  31:Utilities/misc/stm32_tiny_vsnprintf.c ****   * @author  MCD Application Team
+  32:Utilities/misc/stm32_tiny_vsnprintf.c ****   * @brief   Tiny implementation of vsnprintf like function
+ARM GAS  /tmp/ccRzk6gi.s 			page 2
+
+
+  33:Utilities/misc/stm32_tiny_vsnprintf.c ****   ******************************************************************************
+  34:Utilities/misc/stm32_tiny_vsnprintf.c ****   * @attention
+  35:Utilities/misc/stm32_tiny_vsnprintf.c ****   *
+  36:Utilities/misc/stm32_tiny_vsnprintf.c ****   * Copyright (c) 2019 STMicroelectronics.
+  37:Utilities/misc/stm32_tiny_vsnprintf.c ****   * All rights reserved.
+  38:Utilities/misc/stm32_tiny_vsnprintf.c ****   *
+  39:Utilities/misc/stm32_tiny_vsnprintf.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  40:Utilities/misc/stm32_tiny_vsnprintf.c ****   * in the root directory of this software component.
+  41:Utilities/misc/stm32_tiny_vsnprintf.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  42:Utilities/misc/stm32_tiny_vsnprintf.c ****   *
+  43:Utilities/misc/stm32_tiny_vsnprintf.c ****   ******************************************************************************
+  44:Utilities/misc/stm32_tiny_vsnprintf.c ****   */
+  45:Utilities/misc/stm32_tiny_vsnprintf.c **** /*
+  46:Utilities/misc/stm32_tiny_vsnprintf.c ****  * Following implementation is adapted from original one
+  47:Utilities/misc/stm32_tiny_vsnprintf.c ****  *   https://github.com/jpbonn/coremark_lm32/blob/master/ee_printf.c
+  48:Utilities/misc/stm32_tiny_vsnprintf.c ****  */
+  49:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  50:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Includes ------------------------------------------------------------------*/
+  51:Utilities/misc/stm32_tiny_vsnprintf.c **** #include "stm32_tiny_vsnprintf.h"
+  52:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  53:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Private typedef -----------------------------------------------------------*/
+  54:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Private defines -----------------------------------------------------------*/
+  55:Utilities/misc/stm32_tiny_vsnprintf.c **** #define TINY_PRINTF
+  56:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  57:Utilities/misc/stm32_tiny_vsnprintf.c **** #define ZEROPAD    (1<<0)  /* Pad with zero */
+  58:Utilities/misc/stm32_tiny_vsnprintf.c **** #define SIGN      (1<<1)  /* Unsigned/signed long */
+  59:Utilities/misc/stm32_tiny_vsnprintf.c **** #define UPPERCASE   (1<<6)  /* 'ABCDEF' */
+  60:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+  61:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+  62:Utilities/misc/stm32_tiny_vsnprintf.c **** #define PLUS      (1<<2)  /* Show plus */
+  63:Utilities/misc/stm32_tiny_vsnprintf.c **** #define HEX_PREP   (1<<5)  /* 0x */
+  64:Utilities/misc/stm32_tiny_vsnprintf.c **** #define SPACE     (1<<3)  /* Spacer */
+  65:Utilities/misc/stm32_tiny_vsnprintf.c **** #define LEFT      (1<<4)  /* Left justified */
+  66:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+  67:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  68:Utilities/misc/stm32_tiny_vsnprintf.c **** #define is_digit(c) ((c) >= '0' && (c) <= '9')
+  69:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  70:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Private macros ------------------------------------------------------------*/
+  71:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Private variables ---------------------------------------------------------*/
+  72:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Global variables ----------------------------------------------------------*/
+  73:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Private function prototypes -----------------------------------------------*/
+  74:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  75:Utilities/misc/stm32_tiny_vsnprintf.c **** static char *lower_digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+  76:Utilities/misc/stm32_tiny_vsnprintf.c **** static char *upper_digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  77:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  78:Utilities/misc/stm32_tiny_vsnprintf.c **** /* Functions Definition ------------------------------------------------------*/
+  79:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+  80:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+  81:Utilities/misc/stm32_tiny_vsnprintf.c **** static size_t strnlen(const char *s, size_t count);
+  82:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  83:Utilities/misc/stm32_tiny_vsnprintf.c **** static size_t strnlen(const char *s, size_t count)
+  84:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+  85:Utilities/misc/stm32_tiny_vsnprintf.c ****   const char *sc;
+  86:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (sc = s; *sc != '\0' && count--; ++sc);
+  87:Utilities/misc/stm32_tiny_vsnprintf.c ****   return sc - s;
+  88:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+  89:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ARM GAS  /tmp/ccRzk6gi.s 			page 3
+
+
+  90:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  91:Utilities/misc/stm32_tiny_vsnprintf.c **** static int ee_skip_atoi(const char **s)
+  92:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+  27              		.loc 1 92 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32              		.loc 1 92 1 is_stmt 0 view .LVU1
+  33 0000 0146     		mov	r1, r0
+  93:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i = 0;
+  34              		.loc 1 93 3 is_stmt 1 view .LVU2
+  35              	.LVL1:
+  94:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (is_digit(**s)) i = i*10 + *((*s)++) - '0';
+  36              		.loc 1 94 3 view .LVU3
+  93:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i = 0;
+  37              		.loc 1 93 7 is_stmt 0 view .LVU4
+  38 0002 0020     		movs	r0, #0
+  39              	.LVL2:
+  40              		.loc 1 94 9 view .LVU5
+  41 0004 08E0     		b	.L2
+  42              	.LVL3:
+  43              	.L3:
+  44              		.loc 1 94 25 is_stmt 1 discriminator 2 view .LVU6
+  45              		.loc 1 94 30 is_stmt 0 discriminator 2 view .LVU7
+  46 0006 00EB8000 		add	r0, r0, r0, lsl #2
+  47              	.LVL4:
+  48              		.loc 1 94 42 discriminator 2 view .LVU8
+  49 000a 531C     		adds	r3, r2, #1
+  50 000c 0B60     		str	r3, [r1]
+  51              		.loc 1 94 36 discriminator 2 view .LVU9
+  52 000e 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  53              		.loc 1 94 34 discriminator 2 view .LVU10
+  54 0010 03EB4003 		add	r3, r3, r0, lsl #1
+  55              		.loc 1 94 27 discriminator 2 view .LVU11
+  56 0014 A3F13000 		sub	r0, r3, #48
+  57              	.LVL5:
+  58              	.L2:
+  59              		.loc 1 94 10 is_stmt 1 discriminator 1 view .LVU12
+  60 0018 0A68     		ldr	r2, [r1]
+  61 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  62 001c 303B     		subs	r3, r3, #48
+  63 001e DBB2     		uxtb	r3, r3
+  64 0020 092B     		cmp	r3, #9
+  65 0022 F0D9     		bls	.L3
+  95:Utilities/misc/stm32_tiny_vsnprintf.c ****   return i;
+  66              		.loc 1 95 3 view .LVU13
+  96:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+  67              		.loc 1 96 1 is_stmt 0 view .LVU14
+  68 0024 7047     		bx	lr
+  69              		.cfi_endproc
+  70              	.LFE0:
+  72              		.section	.rodata.ee_number.str1.4,"aMS",%progbits,1
+  73              		.align	2
+  74              	.LC0:
+  75 0000 30313233 		.ascii	"0123456789abcdefghijklmnopqrstuvwxyz\000"
+  75      34353637 
+ARM GAS  /tmp/ccRzk6gi.s 			page 4
+
+
+  75      38396162 
+  75      63646566 
+  75      6768696A 
+  76 0025 000000   		.align	2
+  77              	.LC1:
+  78 0028 30313233 		.ascii	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\000"
+  78      34353637 
+  78      38394142 
+  78      43444546 
+  78      4748494A 
+  79              		.section	.text.ee_number,"ax",%progbits
+  80              		.align	1
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  85              	ee_number:
+  86              	.LVL6:
+  87              	.LFB1:
+  97:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+  98:Utilities/misc/stm32_tiny_vsnprintf.c **** #define ASSIGN_STR(_c)  do { *str++ = (_c); max_size--; if (max_size == 0) return str; } while (0)
+  99:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 100:Utilities/misc/stm32_tiny_vsnprintf.c **** static char *ee_number(char *str, int max_size, long num, int base, int size, int precision, int ty
+ 101:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+  88              		.loc 1 101 1 is_stmt 1 view -0
+  89              		.cfi_startproc
+  90              		@ args = 12, pretend = 0, frame = 72
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		.loc 1 101 1 is_stmt 0 view .LVU16
+  93 0000 2DE9F045 		push	{r4, r5, r6, r7, r8, r10, lr}
+  94              		.cfi_def_cfa_offset 28
+  95              		.cfi_offset 4, -28
+  96              		.cfi_offset 5, -24
+  97              		.cfi_offset 6, -20
+  98              		.cfi_offset 7, -16
+  99              		.cfi_offset 8, -12
+ 100              		.cfi_offset 10, -8
+ 101              		.cfi_offset 14, -4
+ 102 0004 93B0     		sub	sp, sp, #76
+ 103              		.cfi_def_cfa_offset 104
+ 104 0006 1B9D     		ldr	r5, [sp, #108]
+ 105 0008 1C9E     		ldr	r6, [sp, #112]
+ 102:Utilities/misc/stm32_tiny_vsnprintf.c ****   char c;
+ 106              		.loc 1 102 3 is_stmt 1 view .LVU17
+ 103:Utilities/misc/stm32_tiny_vsnprintf.c ****   char sign, tmp[66];
+ 107              		.loc 1 103 3 view .LVU18
+ 104:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *dig = lower_digits;
+ 108              		.loc 1 104 3 view .LVU19
+ 109              	.LVL7:
+ 105:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i;
+ 110              		.loc 1 105 3 view .LVU20
+ 106:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 107:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & UPPERCASE)  dig = upper_digits;
+ 111              		.loc 1 107 3 view .LVU21
+ 112              		.loc 1 107 6 is_stmt 0 view .LVU22
+ 113 000a 16F0400F 		tst	r6, #64
+ 114 000e 10D1     		bne	.L25
+ 104:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i;
+ARM GAS  /tmp/ccRzk6gi.s 			page 5
+
+
+ 115              		.loc 1 104 9 view .LVU23
+ 116 0010 DFF8F8A0 		ldr	r10, .L34
+ 117              	.L5:
+ 118              	.LVL8:
+ 108:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 109:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 110:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & LEFT) type &= ~ZEROPAD;
+ 111:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 112:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (base < 2 || base > 36) return 0;
+ 119              		.loc 1 112 3 is_stmt 1 view .LVU24
+ 120              		.loc 1 112 16 is_stmt 0 view .LVU25
+ 121 0014 9F1E     		subs	r7, r3, #2
+ 122              		.loc 1 112 6 view .LVU26
+ 123 0016 222F     		cmp	r7, #34
+ 124 0018 75D8     		bhi	.L26
+ 113:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 114:Utilities/misc/stm32_tiny_vsnprintf.c ****   c = (type & ZEROPAD) ? '0' : ' ';
+ 125              		.loc 1 114 3 is_stmt 1 view .LVU27
+ 126              		.loc 1 114 5 is_stmt 0 view .LVU28
+ 127 001a 16F00104 		ands	r4, r6, #1
+ 128 001e 0BD0     		beq	.L27
+ 129              		.loc 1 114 5 discriminator 1 view .LVU29
+ 130 0020 4FF0300E 		mov	lr, #48
+ 131              	.L7:
+ 132              	.LVL9:
+ 115:Utilities/misc/stm32_tiny_vsnprintf.c ****   sign = 0;
+ 133              		.loc 1 115 3 is_stmt 1 view .LVU30
+ 116:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & SIGN)
+ 134              		.loc 1 116 3 view .LVU31
+ 135              		.loc 1 116 6 is_stmt 0 view .LVU32
+ 136 0024 16F0020F 		tst	r6, #2
+ 137 0028 0FD0     		beq	.L28
+ 117:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 118:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (num < 0)
+ 138              		.loc 1 118 5 is_stmt 1 view .LVU33
+ 139              		.loc 1 118 8 is_stmt 0 view .LVU34
+ 140 002a 002A     		cmp	r2, #0
+ 141 002c 07DB     		blt	.L33
+ 115:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & SIGN)
+ 142              		.loc 1 115 8 view .LVU35
+ 143 002e 0027     		movs	r7, #0
+ 144 0030 0CE0     		b	.L8
+ 145              	.LVL10:
+ 146              	.L25:
+ 107:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 147              		.loc 1 107 30 discriminator 1 view .LVU36
+ 148 0032 DFF8DCA0 		ldr	r10, .L34+4
+ 149 0036 EDE7     		b	.L5
+ 150              	.LVL11:
+ 151              	.L27:
+ 114:Utilities/misc/stm32_tiny_vsnprintf.c ****   sign = 0;
+ 152              		.loc 1 114 5 discriminator 2 view .LVU37
+ 153 0038 4FF0200E 		mov	lr, #32
+ 154 003c F2E7     		b	.L7
+ 155              	.LVL12:
+ 156              	.L33:
+ 119:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ARM GAS  /tmp/ccRzk6gi.s 			page 6
+
+
+ 120:Utilities/misc/stm32_tiny_vsnprintf.c ****       sign = '-';
+ 157              		.loc 1 120 7 is_stmt 1 view .LVU38
+ 121:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = -num;
+ 158              		.loc 1 121 7 view .LVU39
+ 159              		.loc 1 121 11 is_stmt 0 view .LVU40
+ 160 003e 5242     		rsbs	r2, r2, #0
+ 161              	.LVL13:
+ 122:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 162              		.loc 1 122 7 is_stmt 1 view .LVU41
+ 163              		.loc 1 122 11 is_stmt 0 view .LVU42
+ 164 0040 1A9E     		ldr	r6, [sp, #104]
+ 165 0042 013E     		subs	r6, r6, #1
+ 166 0044 1A96     		str	r6, [sp, #104]
+ 167              	.LVL14:
+ 120:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = -num;
+ 168              		.loc 1 120 12 view .LVU43
+ 169 0046 2D27     		movs	r7, #45
+ 170 0048 00E0     		b	.L8
+ 171              	.LVL15:
+ 172              	.L28:
+ 115:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & SIGN)
+ 173              		.loc 1 115 8 view .LVU44
+ 174 004a 0027     		movs	r7, #0
+ 175              	.LVL16:
+ 176              	.L8:
+ 123:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 124:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 125:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 126:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (type & PLUS)
+ 127:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 128:Utilities/misc/stm32_tiny_vsnprintf.c ****       sign = '+';
+ 129:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 130:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 131:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (type & SPACE)
+ 132:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 133:Utilities/misc/stm32_tiny_vsnprintf.c ****       sign = ' ';
+ 134:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 135:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 136:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 137:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 138:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 139:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 140:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 141:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & HEX_PREP)
+ 142:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 143:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (base == 16)
+ 144:Utilities/misc/stm32_tiny_vsnprintf.c ****       size -= 2;
+ 145:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (base == 8)
+ 146:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 147:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 148:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 149:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 150:Utilities/misc/stm32_tiny_vsnprintf.c ****   i = 0;
+ 177              		.loc 1 150 3 is_stmt 1 view .LVU45
+ 151:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 152:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (num == 0)
+ 178              		.loc 1 152 3 view .LVU46
+ARM GAS  /tmp/ccRzk6gi.s 			page 7
+
+
+ 179              		.loc 1 152 6 is_stmt 0 view .LVU47
+ 180 004c 5ABB     		cbnz	r2, .L30
+ 153:Utilities/misc/stm32_tiny_vsnprintf.c ****     tmp[i++] = '0';
+ 181              		.loc 1 153 5 is_stmt 1 view .LVU48
+ 182              	.LVL17:
+ 183              		.loc 1 153 14 is_stmt 0 view .LVU49
+ 184 004e 3023     		movs	r3, #48
+ 185              	.LVL18:
+ 186              		.loc 1 153 14 view .LVU50
+ 187 0050 8DF80430 		strb	r3, [sp, #4]
+ 188              		.loc 1 153 10 view .LVU51
+ 189 0054 4FF0010C 		mov	ip, #1
+ 190              	.LVL19:
+ 191              	.L10:
+ 154:Utilities/misc/stm32_tiny_vsnprintf.c ****   else
+ 155:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 156:Utilities/misc/stm32_tiny_vsnprintf.c ****     while (num != 0)
+ 157:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 158:Utilities/misc/stm32_tiny_vsnprintf.c ****       tmp[i++] = dig[((unsigned long) num) % (unsigned) base];
+ 159:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = ((unsigned long) num) / (unsigned) base;
+ 160:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 161:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 162:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 163:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (i > precision) precision = i;
+ 192              		.loc 1 163 3 is_stmt 1 view .LVU52
+ 193              		.loc 1 163 6 is_stmt 0 view .LVU53
+ 194 0058 AC45     		cmp	ip, r5
+ 195 005a 00DD     		ble	.L12
+ 196              		.loc 1 163 32 discriminator 1 view .LVU54
+ 197 005c 6546     		mov	r5, ip
+ 198              	.L12:
+ 199              	.LVL20:
+ 164:Utilities/misc/stm32_tiny_vsnprintf.c ****   size -= precision;
+ 200              		.loc 1 164 3 is_stmt 1 view .LVU55
+ 201              		.loc 1 164 8 is_stmt 0 view .LVU56
+ 202 005e 1A9B     		ldr	r3, [sp, #104]
+ 203 0060 5B1B     		subs	r3, r3, r5
+ 204              	.LVL21:
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (!(type & (ZEROPAD /* TINY option   | LEFT */))) while (size-- > 0) ASSIGN_STR(' ');
+ 205              		.loc 1 165 3 is_stmt 1 view .LVU57
+ 206              		.loc 1 165 6 is_stmt 0 view .LVU58
+ 207 0062 1CB3     		cbz	r4, .L13
+ 208              	.LVL22:
+ 209              	.L14:
+ 166:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 210              		.loc 1 166 3 is_stmt 1 view .LVU59
+ 211              		.loc 1 166 6 is_stmt 0 view .LVU60
+ 212 0064 1FB1     		cbz	r7, .L17
+ 213              		.loc 1 166 13 is_stmt 1 discriminator 1 view .LVU61
+ 214              		.loc 1 166 13 discriminator 1 view .LVU62
+ 215              	.LVL23:
+ 216              		.loc 1 166 13 is_stmt 0 discriminator 1 view .LVU63
+ 217 0066 00F8017B 		strb	r7, [r0], #1
+ 218              	.LVL24:
+ 219              		.loc 1 166 13 is_stmt 1 view .LVU64
+ 220              		.loc 1 166 13 view .LVU65
+ 221              		.loc 1 166 13 is_stmt 0 discriminator 1 view .LVU66
+ARM GAS  /tmp/ccRzk6gi.s 			page 8
+
+
+ 222 006a 0139     		subs	r1, r1, #1
+ 223              	.LVL25:
+ 224              		.loc 1 166 13 discriminator 1 view .LVU67
+ 225 006c 07D0     		beq	.L4
+ 226              	.LVL26:
+ 227              	.L17:
+ 167:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 168:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 169:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 170:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & HEX_PREP)
+ 171:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 172:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (base == 8)
+ 173:Utilities/misc/stm32_tiny_vsnprintf.c ****       ASSIGN_STR('0');
+ 174:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (base == 16)
+ 175:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 176:Utilities/misc/stm32_tiny_vsnprintf.c ****       ASSIGN_STR('0');
+ 177:Utilities/misc/stm32_tiny_vsnprintf.c ****       ASSIGN_STR(lower_digits[33]);
+ 178:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 179:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 180:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 181:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 182:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 183:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(c);
+ 228              		.loc 1 183 22 is_stmt 1 discriminator 2 view .LVU68
+ 229              		.loc 1 183 17 discriminator 2 view .LVU69
+ 230              		.loc 1 183 17 is_stmt 0 discriminator 2 view .LVU70
+ 231 006e 002B     		cmp	r3, #0
+ 232 0070 03F1FF33 		add	r3, r3, #-1
+ 233              	.LVL27:
+ 234              		.loc 1 183 17 discriminator 2 view .LVU71
+ 235 0074 24DD     		ble	.L19
+ 236              		.loc 1 183 22 is_stmt 1 discriminator 3 view .LVU72
+ 237              		.loc 1 183 22 discriminator 3 view .LVU73
+ 238              	.LVL28:
+ 239              		.loc 1 183 22 is_stmt 0 discriminator 3 view .LVU74
+ 240 0076 00F801EB 		strb	lr, [r0], #1
+ 241              	.LVL29:
+ 242              		.loc 1 183 22 is_stmt 1 discriminator 3 view .LVU75
+ 243              		.loc 1 183 22 discriminator 3 view .LVU76
+ 244 007a 0139     		subs	r1, r1, #1
+ 245              	.LVL30:
+ 246              		.loc 1 183 22 is_stmt 0 discriminator 3 view .LVU77
+ 247 007c F7D1     		bne	.L17
+ 248              	.LVL31:
+ 249              	.L4:
+ 184:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 185:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (!(type & LEFT)) while (size-- > 0) ASSIGN_STR(c);
+ 186:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i < precision--) ASSIGN_STR('0');
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 190:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 191:Utilities/misc/stm32_tiny_vsnprintf.c ****   return str;
+ 192:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 250              		.loc 1 192 1 view .LVU78
+ 251 007e 13B0     		add	sp, sp, #76
+ 252              		.cfi_remember_state
+ARM GAS  /tmp/ccRzk6gi.s 			page 9
+
+
+ 253              		.cfi_def_cfa_offset 28
+ 254              		@ sp needed
+ 255 0080 BDE8F085 		pop	{r4, r5, r6, r7, r8, r10, pc}
+ 256              	.LVL32:
+ 257              	.L11:
+ 258              		.cfi_restore_state
+ 158:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = ((unsigned long) num) / (unsigned) base;
+ 259              		.loc 1 158 7 is_stmt 1 view .LVU79
+ 158:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = ((unsigned long) num) / (unsigned) base;
+ 260              		.loc 1 158 44 is_stmt 0 view .LVU80
+ 261 0084 B2FBF3F6 		udiv	r6, r2, r3
+ 262 0088 03FB1622 		mls	r2, r3, r6, r2
+ 263              	.LVL33:
+ 158:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = ((unsigned long) num) / (unsigned) base;
+ 264              		.loc 1 158 21 view .LVU81
+ 265 008c 1AF80280 		ldrb	r8, [r10, r2]	@ zero_extendqisi2
+ 158:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = ((unsigned long) num) / (unsigned) base;
+ 266              		.loc 1 158 16 view .LVU82
+ 267 0090 0CF14802 		add	r2, ip, #72
+ 268 0094 6A44     		add	r2, sp, r2
+ 269 0096 02F8448C 		strb	r8, [r2, #-68]
+ 159:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 270              		.loc 1 159 7 is_stmt 1 view .LVU83
+ 159:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 271              		.loc 1 159 11 is_stmt 0 view .LVU84
+ 272 009a 3246     		mov	r2, r6
+ 273              	.LVL34:
+ 158:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = ((unsigned long) num) / (unsigned) base;
+ 274              		.loc 1 158 12 view .LVU85
+ 275 009c 0CF1010C 		add	ip, ip, #1
+ 276              	.LVL35:
+ 277              	.L9:
+ 156:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 278              		.loc 1 156 16 is_stmt 1 view .LVU86
+ 279 00a0 002A     		cmp	r2, #0
+ 280 00a2 EFD1     		bne	.L11
+ 281 00a4 D8E7     		b	.L10
+ 282              	.LVL36:
+ 283              	.L30:
+ 150:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 284              		.loc 1 150 5 is_stmt 0 view .LVU87
+ 285 00a6 4FF0000C 		mov	ip, #0
+ 286 00aa F9E7     		b	.L9
+ 287              	.LVL37:
+ 288              	.L13:
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 289              		.loc 1 165 74 is_stmt 1 discriminator 3 view .LVU88
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 290              		.loc 1 165 69 discriminator 3 view .LVU89
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 291              		.loc 1 165 69 is_stmt 0 discriminator 3 view .LVU90
+ 292 00ac 002B     		cmp	r3, #0
+ 293 00ae 03F1FF33 		add	r3, r3, #-1
+ 294              	.LVL38:
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 295              		.loc 1 165 69 discriminator 3 view .LVU91
+ 296 00b2 D7DD     		ble	.L14
+ARM GAS  /tmp/ccRzk6gi.s 			page 10
+
+
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 297              		.loc 1 165 74 is_stmt 1 discriminator 4 view .LVU92
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 298              		.loc 1 165 74 discriminator 4 view .LVU93
+ 299              	.LVL39:
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 300              		.loc 1 165 74 is_stmt 0 discriminator 4 view .LVU94
+ 301 00b4 2022     		movs	r2, #32
+ 302 00b6 00F8012B 		strb	r2, [r0], #1
+ 303              	.LVL40:
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 304              		.loc 1 165 74 is_stmt 1 discriminator 4 view .LVU95
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 305              		.loc 1 165 74 discriminator 4 view .LVU96
+ 306 00ba 0139     		subs	r1, r1, #1
+ 307              	.LVL41:
+ 165:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) ASSIGN_STR(sign);
+ 308              		.loc 1 165 74 is_stmt 0 discriminator 4 view .LVU97
+ 309 00bc F6D1     		bne	.L13
+ 310 00be DEE7     		b	.L4
+ 311              	.LVL42:
+ 312              	.L19:
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 313              		.loc 1 187 27 is_stmt 1 discriminator 2 view .LVU98
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 314              		.loc 1 187 12 discriminator 2 view .LVU99
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 315              		.loc 1 187 12 is_stmt 0 discriminator 2 view .LVU100
+ 316 00c0 6545     		cmp	r5, ip
+ 317 00c2 05F1FF35 		add	r5, r5, #-1
+ 318              	.LVL43:
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 319              		.loc 1 187 12 discriminator 2 view .LVU101
+ 320 00c6 05DD     		ble	.L21
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 321              		.loc 1 187 27 is_stmt 1 discriminator 3 view .LVU102
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 322              		.loc 1 187 27 discriminator 3 view .LVU103
+ 323              	.LVL44:
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 324              		.loc 1 187 27 is_stmt 0 discriminator 3 view .LVU104
+ 325 00c8 3022     		movs	r2, #48
+ 326 00ca 00F8012B 		strb	r2, [r0], #1
+ 327              	.LVL45:
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 328              		.loc 1 187 27 is_stmt 1 discriminator 3 view .LVU105
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 329              		.loc 1 187 27 discriminator 3 view .LVU106
+ 330 00ce 0139     		subs	r1, r1, #1
+ 331              	.LVL46:
+ 187:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (i-- > 0) ASSIGN_STR(tmp[i]);
+ 332              		.loc 1 187 27 is_stmt 0 discriminator 3 view .LVU107
+ 333 00d0 F6D1     		bne	.L19
+ 334 00d2 D4E7     		b	.L4
+ 335              	.LVL47:
+ 336              	.L21:
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ARM GAS  /tmp/ccRzk6gi.s 			page 11
+
+
+ 337              		.loc 1 188 19 is_stmt 1 discriminator 2 view .LVU108
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 338              		.loc 1 188 14 discriminator 2 view .LVU109
+ 339 00d4 6246     		mov	r2, ip
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 340              		.loc 1 188 14 is_stmt 0 discriminator 2 view .LVU110
+ 341 00d6 002A     		cmp	r2, #0
+ 342 00d8 0CF1FF3C 		add	ip, ip, #-1
+ 343              	.LVL48:
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 344              		.loc 1 188 14 discriminator 2 view .LVU111
+ 345 00dc 09DD     		ble	.L23
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 346              		.loc 1 188 19 is_stmt 1 discriminator 3 view .LVU112
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 347              		.loc 1 188 19 discriminator 3 view .LVU113
+ 348              	.LVL49:
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 349              		.loc 1 188 19 is_stmt 0 discriminator 3 view .LVU114
+ 350 00de 0CF14802 		add	r2, ip, #72
+ 351              	.LVL50:
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 352              		.loc 1 188 19 discriminator 3 view .LVU115
+ 353 00e2 6A44     		add	r2, sp, r2
+ 354 00e4 12F8442C 		ldrb	r2, [r2, #-68]	@ zero_extendqisi2
+ 355 00e8 00F8012B 		strb	r2, [r0], #1
+ 356              	.LVL51:
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 357              		.loc 1 188 19 is_stmt 1 discriminator 3 view .LVU116
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 358              		.loc 1 188 19 discriminator 3 view .LVU117
+ 359 00ec 0139     		subs	r1, r1, #1
+ 360              	.LVL52:
+ 188:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) ASSIGN_STR(' ');
+ 361              		.loc 1 188 19 is_stmt 0 discriminator 3 view .LVU118
+ 362 00ee F1D1     		bne	.L21
+ 363 00f0 C5E7     		b	.L4
+ 364              	.LVL53:
+ 365              	.L23:
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 366              		.loc 1 189 22 is_stmt 1 discriminator 2 view .LVU119
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 367              		.loc 1 189 17 discriminator 2 view .LVU120
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 368              		.loc 1 189 17 is_stmt 0 discriminator 2 view .LVU121
+ 369 00f2 002B     		cmp	r3, #0
+ 370 00f4 03F1FF33 		add	r3, r3, #-1
+ 371              	.LVL54:
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 372              		.loc 1 189 17 discriminator 2 view .LVU122
+ 373 00f8 C1DD     		ble	.L4
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 374              		.loc 1 189 22 is_stmt 1 discriminator 3 view .LVU123
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 375              		.loc 1 189 22 discriminator 3 view .LVU124
+ 376              	.LVL55:
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ARM GAS  /tmp/ccRzk6gi.s 			page 12
+
+
+ 377              		.loc 1 189 22 is_stmt 0 discriminator 3 view .LVU125
+ 378 00fa 2022     		movs	r2, #32
+ 379 00fc 00F8012B 		strb	r2, [r0], #1
+ 380              	.LVL56:
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 381              		.loc 1 189 22 is_stmt 1 discriminator 3 view .LVU126
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 382              		.loc 1 189 22 discriminator 3 view .LVU127
+ 383 0100 0139     		subs	r1, r1, #1
+ 384              	.LVL57:
+ 189:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 385              		.loc 1 189 22 is_stmt 0 discriminator 3 view .LVU128
+ 386 0102 F6D1     		bne	.L23
+ 387 0104 BBE7     		b	.L4
+ 388              	.LVL58:
+ 389              	.L26:
+ 112:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 390              		.loc 1 112 37 discriminator 1 view .LVU129
+ 391 0106 0020     		movs	r0, #0
+ 392              	.LVL59:
+ 112:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 393              		.loc 1 112 37 discriminator 1 view .LVU130
+ 394 0108 B9E7     		b	.L4
+ 395              	.L35:
+ 396 010a 00BF     		.align	2
+ 397              	.L34:
+ 398 010c 00000000 		.word	.LC0
+ 399 0110 28000000 		.word	.LC1
+ 400              		.cfi_endproc
+ 401              	.LFE1:
+ 403              		.section	.rodata.tiny_vsnprintf_like.str1.4,"aMS",%progbits,1
+ 404              		.align	2
+ 405              	.LC2:
+ 406 0000 3C4E554C 		.ascii	"<NULL>\000"
+ 406      4C3E00
+ 407              		.section	.text.tiny_vsnprintf_like,"ax",%progbits
+ 408              		.align	1
+ 409              		.global	tiny_vsnprintf_like
+ 410              		.syntax unified
+ 411              		.thumb
+ 412              		.thumb_func
+ 414              	tiny_vsnprintf_like:
+ 415              	.LVL60:
+ 416              	.LFB2:
+ 193:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 194:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 195:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 196:Utilities/misc/stm32_tiny_vsnprintf.c **** static char *eaddr(char *str, unsigned char *addr, int size, int precision, int type)
+ 197:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 198:Utilities/misc/stm32_tiny_vsnprintf.c ****   char tmp[24];
+ 199:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *dig = lower_digits;
+ 200:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i, len;
+ 201:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 202:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (type & UPPERCASE)  dig = upper_digits;
+ 203:Utilities/misc/stm32_tiny_vsnprintf.c ****   len = 0;
+ 204:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (i = 0; i < 6; i++)
+ 205:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ARM GAS  /tmp/ccRzk6gi.s 			page 13
+
+
+ 206:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (i != 0) tmp[len++] = ':';
+ 207:Utilities/misc/stm32_tiny_vsnprintf.c ****     tmp[len++] = dig[addr[i] >> 4];
+ 208:Utilities/misc/stm32_tiny_vsnprintf.c ****     tmp[len++] = dig[addr[i] & 0x0F];
+ 209:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 210:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 211:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (!(type & LEFT)) while (len < size--) *str++ = ' ';
+ 212:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (i = 0; i < len; ++i) *str++ = tmp[i];
+ 213:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (len < size--) *str++ = ' ';
+ 214:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 215:Utilities/misc/stm32_tiny_vsnprintf.c ****   return str;
+ 216:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 217:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 218:Utilities/misc/stm32_tiny_vsnprintf.c **** static char *iaddr(char *str, unsigned char *addr, int size, int precision, int type)
+ 219:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 220:Utilities/misc/stm32_tiny_vsnprintf.c ****   char tmp[24];
+ 221:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i, n, len;
+ 222:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 223:Utilities/misc/stm32_tiny_vsnprintf.c ****   len = 0;
+ 224:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (i = 0; i < 4; i++)
+ 225:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 226:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (i != 0) tmp[len++] = '.';
+ 227:Utilities/misc/stm32_tiny_vsnprintf.c ****     n = addr[i];
+ 228:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 229:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (n == 0)
+ 230:Utilities/misc/stm32_tiny_vsnprintf.c ****       tmp[len++] = lower_digits[0];
+ 231:Utilities/misc/stm32_tiny_vsnprintf.c ****     else
+ 232:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 233:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (n >= 100)
+ 234:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 235:Utilities/misc/stm32_tiny_vsnprintf.c ****         tmp[len++] = lower_digits[n / 100];
+ 236:Utilities/misc/stm32_tiny_vsnprintf.c ****         n = n % 100;
+ 237:Utilities/misc/stm32_tiny_vsnprintf.c ****         tmp[len++] = lower_digits[n / 10];
+ 238:Utilities/misc/stm32_tiny_vsnprintf.c ****         n = n % 10;
+ 239:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 240:Utilities/misc/stm32_tiny_vsnprintf.c ****       else if (n >= 10)
+ 241:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 242:Utilities/misc/stm32_tiny_vsnprintf.c ****         tmp[len++] = lower_digits[n / 10];
+ 243:Utilities/misc/stm32_tiny_vsnprintf.c ****         n = n % 10;
+ 244:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 245:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 246:Utilities/misc/stm32_tiny_vsnprintf.c ****       tmp[len++] = lower_digits[n];
+ 247:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 248:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 249:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 250:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (!(type & LEFT)) while (len < size--) *str++ = ' ';
+ 251:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (i = 0; i < len; ++i) *str++ = tmp[i];
+ 252:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (len < size--) *str++ = ' ';
+ 253:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 254:Utilities/misc/stm32_tiny_vsnprintf.c ****   return str;
+ 255:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 256:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 257:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 258:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef HAS_FLOAT
+ 259:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 260:Utilities/misc/stm32_tiny_vsnprintf.c **** char *ecvtbuf(double arg, int ndigits, int *decpt, int *sign, char *buf);
+ 261:Utilities/misc/stm32_tiny_vsnprintf.c **** char *fcvtbuf(double arg, int ndigits, int *decpt, int *sign, char *buf);
+ 262:Utilities/misc/stm32_tiny_vsnprintf.c **** static void ee_bufcpy(char *d, char *s, int count);
+ARM GAS  /tmp/ccRzk6gi.s 			page 14
+
+
+ 263:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 264:Utilities/misc/stm32_tiny_vsnprintf.c **** void ee_bufcpy(char *pd, char *ps, int count) {
+ 265:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *pe=ps+count;
+ 266:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (ps!=pe)
+ 267:Utilities/misc/stm32_tiny_vsnprintf.c ****     *pd++=*ps++;
+ 268:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 269:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 270:Utilities/misc/stm32_tiny_vsnprintf.c **** static void parse_float(double value, char *buffer, char fmt, int precision)
+ 271:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 272:Utilities/misc/stm32_tiny_vsnprintf.c ****   int decpt, sign, exp, pos;
+ 273:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *fdigits = NULL;
+ 274:Utilities/misc/stm32_tiny_vsnprintf.c ****   char cvtbuf[80];
+ 275:Utilities/misc/stm32_tiny_vsnprintf.c ****   int capexp = 0;
+ 276:Utilities/misc/stm32_tiny_vsnprintf.c ****   int magnitude;
+ 277:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 278:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (fmt == 'G' || fmt == 'E')
+ 279:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 280:Utilities/misc/stm32_tiny_vsnprintf.c ****     capexp = 1;
+ 281:Utilities/misc/stm32_tiny_vsnprintf.c ****     fmt += 'a' - 'A';
+ 282:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 283:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 284:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (fmt == 'g')
+ 285:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 286:Utilities/misc/stm32_tiny_vsnprintf.c ****     fdigits = ecvtbuf(value, precision, &decpt, &sign, cvtbuf);
+ 287:Utilities/misc/stm32_tiny_vsnprintf.c ****     magnitude = decpt - 1;
+ 288:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (magnitude < -4  ||  magnitude > precision - 1)
+ 289:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 290:Utilities/misc/stm32_tiny_vsnprintf.c ****       fmt = 'e';
+ 291:Utilities/misc/stm32_tiny_vsnprintf.c ****       precision -= 1;
+ 292:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 293:Utilities/misc/stm32_tiny_vsnprintf.c ****     else
+ 294:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 295:Utilities/misc/stm32_tiny_vsnprintf.c ****       fmt = 'f';
+ 296:Utilities/misc/stm32_tiny_vsnprintf.c ****       precision -= decpt;
+ 297:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 298:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 299:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 300:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (fmt == 'e')
+ 301:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 302:Utilities/misc/stm32_tiny_vsnprintf.c ****     fdigits = ecvtbuf(value, precision + 1, &decpt, &sign, cvtbuf);
+ 303:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 304:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (sign) *buffer++ = '-';
+ 305:Utilities/misc/stm32_tiny_vsnprintf.c ****     *buffer++ = *fdigits;
+ 306:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (precision > 0) *buffer++ = '.';
+ 307:Utilities/misc/stm32_tiny_vsnprintf.c ****     ee_bufcpy(buffer, fdigits + 1, precision);
+ 308:Utilities/misc/stm32_tiny_vsnprintf.c ****     buffer += precision;
+ 309:Utilities/misc/stm32_tiny_vsnprintf.c ****     *buffer++ = capexp ? 'E' : 'e';
+ 310:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 311:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (decpt == 0)
+ 312:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 313:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (value == 0.0)
+ 314:Utilities/misc/stm32_tiny_vsnprintf.c ****         exp = 0;
+ 315:Utilities/misc/stm32_tiny_vsnprintf.c ****       else
+ 316:Utilities/misc/stm32_tiny_vsnprintf.c ****         exp = -1;
+ 317:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 318:Utilities/misc/stm32_tiny_vsnprintf.c ****     else
+ 319:Utilities/misc/stm32_tiny_vsnprintf.c ****       exp = decpt - 1;
+ARM GAS  /tmp/ccRzk6gi.s 			page 15
+
+
+ 320:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 321:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (exp < 0)
+ 322:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 323:Utilities/misc/stm32_tiny_vsnprintf.c ****       *buffer++ = '-';
+ 324:Utilities/misc/stm32_tiny_vsnprintf.c ****       exp = -exp;
+ 325:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 326:Utilities/misc/stm32_tiny_vsnprintf.c ****     else
+ 327:Utilities/misc/stm32_tiny_vsnprintf.c ****       *buffer++ = '+';
+ 328:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 329:Utilities/misc/stm32_tiny_vsnprintf.c ****     buffer[2] = (exp % 10) + '0';
+ 330:Utilities/misc/stm32_tiny_vsnprintf.c ****     exp = exp / 10;
+ 331:Utilities/misc/stm32_tiny_vsnprintf.c ****     buffer[1] = (exp % 10) + '0';
+ 332:Utilities/misc/stm32_tiny_vsnprintf.c ****     exp = exp / 10;
+ 333:Utilities/misc/stm32_tiny_vsnprintf.c ****     buffer[0] = (exp % 10) + '0';
+ 334:Utilities/misc/stm32_tiny_vsnprintf.c ****     buffer += 3;
+ 335:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 336:Utilities/misc/stm32_tiny_vsnprintf.c ****   else if (fmt == 'f')
+ 337:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 338:Utilities/misc/stm32_tiny_vsnprintf.c ****     fdigits = fcvtbuf(value, precision, &decpt, &sign, cvtbuf);
+ 339:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (sign) *buffer++ = '-';
+ 340:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*fdigits)
+ 341:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 342:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (decpt <= 0)
+ 343:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 344:Utilities/misc/stm32_tiny_vsnprintf.c ****         *buffer++ = '0';
+ 345:Utilities/misc/stm32_tiny_vsnprintf.c ****         *buffer++ = '.';
+ 346:Utilities/misc/stm32_tiny_vsnprintf.c ****         for (pos = 0; pos < -decpt; pos++) *buffer++ = '0';
+ 347:Utilities/misc/stm32_tiny_vsnprintf.c ****         while (*fdigits) *buffer++ = *fdigits++;
+ 348:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 349:Utilities/misc/stm32_tiny_vsnprintf.c ****       else
+ 350:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 351:Utilities/misc/stm32_tiny_vsnprintf.c ****         pos = 0;
+ 352:Utilities/misc/stm32_tiny_vsnprintf.c ****         while (*fdigits)
+ 353:Utilities/misc/stm32_tiny_vsnprintf.c ****         {
+ 354:Utilities/misc/stm32_tiny_vsnprintf.c ****           if (pos++ == decpt) *buffer++ = '.';
+ 355:Utilities/misc/stm32_tiny_vsnprintf.c ****           *buffer++ = *fdigits++;
+ 356:Utilities/misc/stm32_tiny_vsnprintf.c ****         }
+ 357:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 358:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 359:Utilities/misc/stm32_tiny_vsnprintf.c ****     else
+ 360:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 361:Utilities/misc/stm32_tiny_vsnprintf.c ****       *buffer++ = '0';
+ 362:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (precision > 0)
+ 363:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 364:Utilities/misc/stm32_tiny_vsnprintf.c ****         *buffer++ = '.';
+ 365:Utilities/misc/stm32_tiny_vsnprintf.c ****         for (pos = 0; pos < precision; pos++) *buffer++ = '0';
+ 366:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 367:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 368:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 369:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 370:Utilities/misc/stm32_tiny_vsnprintf.c ****   *buffer = '\0';
+ 371:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 372:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 373:Utilities/misc/stm32_tiny_vsnprintf.c **** static void decimal_point(char *buffer)
+ 374:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 375:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (*buffer)
+ 376:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ARM GAS  /tmp/ccRzk6gi.s 			page 16
+
+
+ 377:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*buffer == '.') return;
+ 378:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*buffer == 'e' || *buffer == 'E') break;
+ 379:Utilities/misc/stm32_tiny_vsnprintf.c ****     buffer++;
+ 380:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 381:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 382:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (*buffer)
+ 383:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 384:Utilities/misc/stm32_tiny_vsnprintf.c ****     int n = strnlen(buffer,256);
+ 385:Utilities/misc/stm32_tiny_vsnprintf.c ****     while (n > 0)
+ 386:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 387:Utilities/misc/stm32_tiny_vsnprintf.c ****       buffer[n + 1] = buffer[n];
+ 388:Utilities/misc/stm32_tiny_vsnprintf.c ****       n--;
+ 389:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 390:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 391:Utilities/misc/stm32_tiny_vsnprintf.c ****     *buffer = '.';
+ 392:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 393:Utilities/misc/stm32_tiny_vsnprintf.c ****   else
+ 394:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 395:Utilities/misc/stm32_tiny_vsnprintf.c ****     *buffer++ = '.';
+ 396:Utilities/misc/stm32_tiny_vsnprintf.c ****     *buffer = '\0';
+ 397:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 398:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 399:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 400:Utilities/misc/stm32_tiny_vsnprintf.c **** static void cropzeros(char *buffer)
+ 401:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 402:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *stop;
+ 403:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 404:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (*buffer && *buffer != '.') buffer++;
+ 405:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (*buffer++)
+ 406:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 407:Utilities/misc/stm32_tiny_vsnprintf.c ****     while (*buffer && *buffer != 'e' && *buffer != 'E') buffer++;
+ 408:Utilities/misc/stm32_tiny_vsnprintf.c ****     stop = buffer--;
+ 409:Utilities/misc/stm32_tiny_vsnprintf.c ****     while (*buffer == '0') buffer--;
+ 410:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*buffer == '.') buffer--;
+ 411:Utilities/misc/stm32_tiny_vsnprintf.c ****     while (buffer!=stop)
+ 412:Utilities/misc/stm32_tiny_vsnprintf.c ****     *++buffer=0;
+ 413:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 414:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 415:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 416:Utilities/misc/stm32_tiny_vsnprintf.c **** static char *flt(char *str, double num, int size, int precision, char fmt, int flags)
+ 417:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 418:Utilities/misc/stm32_tiny_vsnprintf.c ****   char tmp[80];
+ 419:Utilities/misc/stm32_tiny_vsnprintf.c ****   char c, sign;
+ 420:Utilities/misc/stm32_tiny_vsnprintf.c ****   int n, i;
+ 421:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 422:Utilities/misc/stm32_tiny_vsnprintf.c ****   // Left align means no zero padding
+ 423:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 424:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 425:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (flags & LEFT) flags &= ~ZEROPAD;
+ 426:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 427:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 428:Utilities/misc/stm32_tiny_vsnprintf.c ****   // Determine padding and sign char
+ 429:Utilities/misc/stm32_tiny_vsnprintf.c ****   c = (flags & ZEROPAD) ? '0' : ' ';
+ 430:Utilities/misc/stm32_tiny_vsnprintf.c ****   sign = 0;
+ 431:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (flags & SIGN)
+ 432:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 433:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (num < 0.0)
+ARM GAS  /tmp/ccRzk6gi.s 			page 17
+
+
+ 434:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 435:Utilities/misc/stm32_tiny_vsnprintf.c ****       sign = '-';
+ 436:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = -num;
+ 437:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 438:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 439:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 440:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 441:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (flags & PLUS)
+ 442:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 443:Utilities/misc/stm32_tiny_vsnprintf.c ****       sign = '+';
+ 444:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 445:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 446:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (flags & SPACE)
+ 447:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 448:Utilities/misc/stm32_tiny_vsnprintf.c ****       sign = ' ';
+ 449:Utilities/misc/stm32_tiny_vsnprintf.c ****       size--;
+ 450:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 451:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 452:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 453:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 454:Utilities/misc/stm32_tiny_vsnprintf.c ****   // Compute the precision value
+ 455:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (precision < 0)
+ 456:Utilities/misc/stm32_tiny_vsnprintf.c ****     precision = 6; // Default precision: 6
+ 457:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 458:Utilities/misc/stm32_tiny_vsnprintf.c ****   // Convert floating point number to text
+ 459:Utilities/misc/stm32_tiny_vsnprintf.c ****   parse_float(num, tmp, fmt, precision);
+ 460:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 461:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 462:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 463:Utilities/misc/stm32_tiny_vsnprintf.c ****   if ((flags & HEX_PREP) && precision == 0) decimal_point(tmp);
+ 464:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 465:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (fmt == 'g' && !(flags & HEX_PREP)) cropzeros(tmp);
+ 466:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 467:Utilities/misc/stm32_tiny_vsnprintf.c ****   n = strnlen(tmp,256);
+ 468:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 469:Utilities/misc/stm32_tiny_vsnprintf.c ****   // Output number with alignment and padding
+ 470:Utilities/misc/stm32_tiny_vsnprintf.c ****   size -= n;
+ 471:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (!(flags & (ZEROPAD | LEFT))) while (size-- > 0) *str++ = ' ';
+ 472:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (sign) *str++ = sign;
+ 473:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (!(flags & LEFT)) while (size-- > 0) *str++ = c;
+ 474:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (i = 0; i < n; i++) *str++ = tmp[i];
+ 475:Utilities/misc/stm32_tiny_vsnprintf.c ****   while (size-- > 0) *str++ = ' ';
+ 476:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 477:Utilities/misc/stm32_tiny_vsnprintf.c ****   return str;
+ 478:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 479:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 480:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 481:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 482:Utilities/misc/stm32_tiny_vsnprintf.c **** #define CHECK_STR_SIZE(_buf, _str, _size) \
+ 483:Utilities/misc/stm32_tiny_vsnprintf.c ****   if ((((_str) - (_buf)) >= ((_size)-1))) { break; }
+ 484:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 485:Utilities/misc/stm32_tiny_vsnprintf.c **** int tiny_vsnprintf_like(char *buf, const int size, const char *fmt, va_list args)
+ 486:Utilities/misc/stm32_tiny_vsnprintf.c **** {
+ 417              		.loc 1 486 1 is_stmt 1 view -0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 8
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccRzk6gi.s 			page 18
+
+
+ 421              		.loc 1 486 1 is_stmt 0 view .LVU132
+ 422 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 423              		.cfi_def_cfa_offset 28
+ 424              		.cfi_offset 4, -28
+ 425              		.cfi_offset 5, -24
+ 426              		.cfi_offset 6, -20
+ 427              		.cfi_offset 7, -16
+ 428              		.cfi_offset 8, -12
+ 429              		.cfi_offset 9, -8
+ 430              		.cfi_offset 14, -4
+ 431 0004 87B0     		sub	sp, sp, #28
+ 432              		.cfi_def_cfa_offset 56
+ 433 0006 0592     		str	r2, [sp, #20]
+ 434 0008 0493     		str	r3, [sp, #16]
+ 487:Utilities/misc/stm32_tiny_vsnprintf.c ****   unsigned long num;
+ 435              		.loc 1 487 3 is_stmt 1 view .LVU133
+ 488:Utilities/misc/stm32_tiny_vsnprintf.c ****   int base;
+ 436              		.loc 1 488 3 view .LVU134
+ 489:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *str;
+ 437              		.loc 1 489 3 view .LVU135
+ 490:Utilities/misc/stm32_tiny_vsnprintf.c ****   int len;
+ 438              		.loc 1 490 3 view .LVU136
+ 491:Utilities/misc/stm32_tiny_vsnprintf.c ****   int i;
+ 439              		.loc 1 491 3 view .LVU137
+ 492:Utilities/misc/stm32_tiny_vsnprintf.c ****   char *s;
+ 440              		.loc 1 492 3 view .LVU138
+ 493:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 494:Utilities/misc/stm32_tiny_vsnprintf.c ****   int flags;            // Flags to number()
+ 441              		.loc 1 494 3 view .LVU139
+ 495:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 496:Utilities/misc/stm32_tiny_vsnprintf.c ****   int field_width;      // Width of output field
+ 442              		.loc 1 496 3 view .LVU140
+ 497:Utilities/misc/stm32_tiny_vsnprintf.c ****   int precision;        // Min. # of digits for integers; max number of chars for from string
+ 443              		.loc 1 497 3 view .LVU141
+ 498:Utilities/misc/stm32_tiny_vsnprintf.c ****   int qualifier;        // 'h', 'l', or 'L' for integer fields
+ 444              		.loc 1 498 3 view .LVU142
+ 499:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 500:Utilities/misc/stm32_tiny_vsnprintf.c ****   if (size <= 0)
+ 445              		.loc 1 500 3 view .LVU143
+ 446              		.loc 1 500 6 is_stmt 0 view .LVU144
+ 447 000a 0E1E     		subs	r6, r1, #0
+ 448 000c 40F3B680 		ble	.L65
+ 449 0010 0546     		mov	r5, r0
+ 501:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 502:Utilities/misc/stm32_tiny_vsnprintf.c ****     return 0;
+ 503:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 504:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   for (str = buf; *fmt || ((str - buf) >= size-1); fmt++)
+ 450              		.loc 1 505 12 view .LVU145
+ 451 0012 0446     		mov	r4, r0
+ 452 0014 04E0     		b	.L38
+ 453              	.LVL61:
+ 454              	.L73:
+ 506:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 507:Utilities/misc/stm32_tiny_vsnprintf.c ****     CHECK_STR_SIZE(buf, str, size);
+ 508:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 509:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*fmt != '%')
+ARM GAS  /tmp/ccRzk6gi.s 			page 19
+
+
+ 510:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 511:Utilities/misc/stm32_tiny_vsnprintf.c ****       *str++ = *fmt;
+ 455              		.loc 1 511 7 is_stmt 1 view .LVU146
+ 456              		.loc 1 511 14 is_stmt 0 view .LVU147
+ 457 0016 04F8012B 		strb	r2, [r4], #1
+ 458              	.LVL62:
+ 512:Utilities/misc/stm32_tiny_vsnprintf.c ****       continue;
+ 459              		.loc 1 512 7 is_stmt 1 view .LVU148
+ 460              	.L41:
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 461              		.loc 1 505 55 discriminator 2 view .LVU149
+ 462 001a 059B     		ldr	r3, [sp, #20]
+ 463 001c 0133     		adds	r3, r3, #1
+ 464 001e 0593     		str	r3, [sp, #20]
+ 465              	.LVL63:
+ 466              	.L38:
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 467              		.loc 1 505 24 discriminator 1 view .LVU150
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 468              		.loc 1 505 19 is_stmt 0 discriminator 1 view .LVU151
+ 469 0020 0599     		ldr	r1, [sp, #20]
+ 470 0022 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 471              		.loc 1 505 24 discriminator 1 view .LVU152
+ 472 0024 22B9     		cbnz	r2, .L64
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 473              		.loc 1 505 33 discriminator 3 view .LVU153
+ 474 0026 631B     		subs	r3, r4, r5
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 475              		.loc 1 505 47 discriminator 3 view .LVU154
+ 476 0028 701E     		subs	r0, r6, #1
+ 505:Utilities/misc/stm32_tiny_vsnprintf.c ****   {
+ 477              		.loc 1 505 24 discriminator 3 view .LVU155
+ 478 002a 8342     		cmp	r3, r0
+ 479 002c C0F2A080 		blt	.L39
+ 480              	.L64:
+ 507:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 481              		.loc 1 507 5 is_stmt 1 view .LVU156
+ 482 0030 631B     		subs	r3, r4, r5
+ 483 0032 771E     		subs	r7, r6, #1
+ 484 0034 BB42     		cmp	r3, r7
+ 485 0036 80F29B80 		bge	.L39
+ 507:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 486              		.loc 1 507 35 discriminator 1 view .LVU157
+ 509:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 487              		.loc 1 509 5 view .LVU158
+ 509:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 488              		.loc 1 509 8 is_stmt 0 view .LVU159
+ 489 003a 252A     		cmp	r2, #37
+ 490 003c EBD1     		bne	.L73
+ 513:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 514:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 515:Utilities/misc/stm32_tiny_vsnprintf.c ****     // Process flags
+ 516:Utilities/misc/stm32_tiny_vsnprintf.c ****     flags = 0;
+ 491              		.loc 1 516 5 is_stmt 1 view .LVU160
+ 492              	.LVL64:
+ 517:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ARM GAS  /tmp/ccRzk6gi.s 			page 20
+
+
+ 518:Utilities/misc/stm32_tiny_vsnprintf.c ****     /* Support %0, but not %-, %+, %space and %# */
+ 519:Utilities/misc/stm32_tiny_vsnprintf.c ****     fmt++;
+ 493              		.loc 1 519 5 view .LVU161
+ 494              		.loc 1 519 8 is_stmt 0 view .LVU162
+ 495 003e 4B1C     		adds	r3, r1, #1
+ 496 0040 0593     		str	r3, [sp, #20]
+ 520:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*fmt == '0')
+ 497              		.loc 1 520 5 is_stmt 1 view .LVU163
+ 498              		.loc 1 520 9 is_stmt 0 view .LVU164
+ 499 0042 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 500              		.loc 1 520 8 view .LVU165
+ 501 0044 302B     		cmp	r3, #48
+ 502 0046 20D0     		beq	.L66
+ 516:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 503              		.loc 1 516 11 view .LVU166
+ 504 0048 4FF00008 		mov	r8, #0
+ 505              	.L42:
+ 506              	.LVL65:
+ 521:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 522:Utilities/misc/stm32_tiny_vsnprintf.c ****       flags |= ZEROPAD;
+ 523:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 524:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 525:Utilities/misc/stm32_tiny_vsnprintf.c **** repeat:
+ 526:Utilities/misc/stm32_tiny_vsnprintf.c ****     fmt++; // This also skips first '%'
+ 527:Utilities/misc/stm32_tiny_vsnprintf.c ****     switch (*fmt)
+ 528:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 529:Utilities/misc/stm32_tiny_vsnprintf.c ****       case '-': flags |= LEFT; goto repeat;
+ 530:Utilities/misc/stm32_tiny_vsnprintf.c ****       case '+': flags |= PLUS; goto repeat;
+ 531:Utilities/misc/stm32_tiny_vsnprintf.c ****       case ' ': flags |= SPACE; goto repeat;
+ 532:Utilities/misc/stm32_tiny_vsnprintf.c ****       case '#': flags |= HEX_PREP; goto repeat;
+ 533:Utilities/misc/stm32_tiny_vsnprintf.c ****       case '0': flags |= ZEROPAD; goto repeat;
+ 534:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 535:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 536:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 537:Utilities/misc/stm32_tiny_vsnprintf.c ****     // Get field width
+ 538:Utilities/misc/stm32_tiny_vsnprintf.c ****     field_width = -1;
+ 507              		.loc 1 538 5 is_stmt 1 view .LVU167
+ 539:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (is_digit(*fmt))
+ 508              		.loc 1 539 5 view .LVU168
+ 509              		.loc 1 539 9 is_stmt 0 view .LVU169
+ 510 004c 303B     		subs	r3, r3, #48
+ 511 004e DBB2     		uxtb	r3, r3
+ 512              		.loc 1 539 8 view .LVU170
+ 513 0050 092B     		cmp	r3, #9
+ 514 0052 1DD9     		bls	.L74
+ 538:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (is_digit(*fmt))
+ 515              		.loc 1 538 17 view .LVU171
+ 516 0054 4FF0FF39 		mov	r9, #-1
+ 517              	.LVL66:
+ 518              	.L43:
+ 540:Utilities/misc/stm32_tiny_vsnprintf.c ****       field_width = ee_skip_atoi(&fmt);
+ 541:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 542:Utilities/misc/stm32_tiny_vsnprintf.c ****     /* Does not support %* */
+ 543:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 544:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (*fmt == '*')
+ 545:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 546:Utilities/misc/stm32_tiny_vsnprintf.c ****       fmt++;
+ARM GAS  /tmp/ccRzk6gi.s 			page 21
+
+
+ 547:Utilities/misc/stm32_tiny_vsnprintf.c ****       field_width = va_arg(args, int);
+ 548:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (field_width < 0)
+ 549:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 550:Utilities/misc/stm32_tiny_vsnprintf.c ****         field_width = -field_width;
+ 551:Utilities/misc/stm32_tiny_vsnprintf.c ****         flags |= LEFT;
+ 552:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 553:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 554:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 555:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 556:Utilities/misc/stm32_tiny_vsnprintf.c ****     // Get the precision
+ 557:Utilities/misc/stm32_tiny_vsnprintf.c ****     precision = -1;
+ 519              		.loc 1 557 5 is_stmt 1 view .LVU172
+ 558:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 559:Utilities/misc/stm32_tiny_vsnprintf.c ****     /* Does not support %. */
+ 560:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 561:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*fmt == '.')
+ 562:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 563:Utilities/misc/stm32_tiny_vsnprintf.c ****       ++fmt;
+ 564:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (is_digit(*fmt))
+ 565:Utilities/misc/stm32_tiny_vsnprintf.c ****         precision = ee_skip_atoi(&fmt);
+ 566:Utilities/misc/stm32_tiny_vsnprintf.c ****       else if (*fmt == '*')
+ 567:Utilities/misc/stm32_tiny_vsnprintf.c ****       {
+ 568:Utilities/misc/stm32_tiny_vsnprintf.c ****         ++fmt;
+ 569:Utilities/misc/stm32_tiny_vsnprintf.c ****         precision = va_arg(args, int);
+ 570:Utilities/misc/stm32_tiny_vsnprintf.c ****       }
+ 571:Utilities/misc/stm32_tiny_vsnprintf.c ****       if (precision < 0) precision = 0;
+ 572:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 573:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 574:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 575:Utilities/misc/stm32_tiny_vsnprintf.c ****     // Get the conversion qualifier
+ 576:Utilities/misc/stm32_tiny_vsnprintf.c ****     qualifier = -1;
+ 520              		.loc 1 576 5 view .LVU173
+ 577:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 578:Utilities/misc/stm32_tiny_vsnprintf.c ****       /* Does not support %l and %L */
+ 579:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 580:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (*fmt == 'l' || *fmt == 'L')
+ 581:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 582:Utilities/misc/stm32_tiny_vsnprintf.c ****       qualifier = *fmt;
+ 583:Utilities/misc/stm32_tiny_vsnprintf.c ****       fmt++;
+ 584:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 585:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 586:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 587:Utilities/misc/stm32_tiny_vsnprintf.c ****     // Default base
+ 588:Utilities/misc/stm32_tiny_vsnprintf.c ****     base = 10;
+ 521              		.loc 1 588 5 view .LVU174
+ 589:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 590:Utilities/misc/stm32_tiny_vsnprintf.c ****     switch (*fmt)
+ 522              		.loc 1 590 5 view .LVU175
+ 523              		.loc 1 590 13 is_stmt 0 view .LVU176
+ 524 0058 059B     		ldr	r3, [sp, #20]
+ 525 005a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 526              		.loc 1 590 5 view .LVU177
+ 527 005c A2F15803 		sub	r3, r2, #88
+ 528 0060 202B     		cmp	r3, #32
+ 529 0062 52D8     		bhi	.L44
+ 530 0064 DFE803F0 		tbb	[pc, r3]
+ 531              	.L46:
+ARM GAS  /tmp/ccRzk6gi.s 			page 22
+
+
+ 532 0068 49       		.byte	(.L51-.L46)/2
+ 533 0069 51       		.byte	(.L44-.L46)/2
+ 534 006a 51       		.byte	(.L44-.L46)/2
+ 535 006b 51       		.byte	(.L44-.L46)/2
+ 536 006c 51       		.byte	(.L44-.L46)/2
+ 537 006d 51       		.byte	(.L44-.L46)/2
+ 538 006e 51       		.byte	(.L44-.L46)/2
+ 539 006f 51       		.byte	(.L44-.L46)/2
+ 540 0070 51       		.byte	(.L44-.L46)/2
+ 541 0071 51       		.byte	(.L44-.L46)/2
+ 542 0072 51       		.byte	(.L44-.L46)/2
+ 543 0073 1E       		.byte	(.L50-.L46)/2
+ 544 0074 4D       		.byte	(.L49-.L46)/2
+ 545 0075 51       		.byte	(.L44-.L46)/2
+ 546 0076 51       		.byte	(.L44-.L46)/2
+ 547 0077 51       		.byte	(.L44-.L46)/2
+ 548 0078 51       		.byte	(.L44-.L46)/2
+ 549 0079 4D       		.byte	(.L49-.L46)/2
+ 550 007a 51       		.byte	(.L44-.L46)/2
+ 551 007b 51       		.byte	(.L44-.L46)/2
+ 552 007c 51       		.byte	(.L44-.L46)/2
+ 553 007d 51       		.byte	(.L44-.L46)/2
+ 554 007e 51       		.byte	(.L44-.L46)/2
+ 555 007f 51       		.byte	(.L44-.L46)/2
+ 556 0080 51       		.byte	(.L44-.L46)/2
+ 557 0081 51       		.byte	(.L44-.L46)/2
+ 558 0082 51       		.byte	(.L44-.L46)/2
+ 559 0083 2A       		.byte	(.L48-.L46)/2
+ 560 0084 51       		.byte	(.L44-.L46)/2
+ 561 0085 19       		.byte	(.L47-.L46)/2
+ 562 0086 51       		.byte	(.L44-.L46)/2
+ 563 0087 51       		.byte	(.L44-.L46)/2
+ 564 0088 67       		.byte	(.L68-.L46)/2
+ 565              	.LVL67:
+ 566 0089 00       		.p2align 1
+ 567              	.L66:
+ 522:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 568              		.loc 1 522 13 view .LVU178
+ 569 008a 4FF00108 		mov	r8, #1
+ 570 008e DDE7     		b	.L42
+ 571              	.LVL68:
+ 572              	.L74:
+ 540:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 573              		.loc 1 540 7 is_stmt 1 view .LVU179
+ 540:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 574              		.loc 1 540 21 is_stmt 0 view .LVU180
+ 575 0090 05A8     		add	r0, sp, #20
+ 576 0092 FFF7FEFF 		bl	ee_skip_atoi
+ 577              	.LVL69:
+ 578 0096 8146     		mov	r9, r0
+ 579              	.LVL70:
+ 540:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 580              		.loc 1 540 21 view .LVU181
+ 581 0098 DEE7     		b	.L43
+ 582              	.LVL71:
+ 583              	.L47:
+ 584              		.loc 1 590 5 view .LVU182
+ARM GAS  /tmp/ccRzk6gi.s 			page 23
+
+
+ 585 009a 0A23     		movs	r3, #10
+ 586 009c 4EE0     		b	.L45
+ 587              	.L52:
+ 591:Utilities/misc/stm32_tiny_vsnprintf.c ****     {
+ 592:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'c':
+ 593:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 594:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 595:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (!(flags & LEFT))
+ 596:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 597:Utilities/misc/stm32_tiny_vsnprintf.c ****           while (--field_width > 0) *str++ = ' ';
+ 588              		.loc 1 597 37 is_stmt 1 discriminator 2 view .LVU183
+ 589              	.LVL72:
+ 590              		.loc 1 597 44 is_stmt 0 discriminator 2 view .LVU184
+ 591 009e 2023     		movs	r3, #32
+ 592 00a0 04F8013B 		strb	r3, [r4], #1
+ 593              	.LVL73:
+ 594              	.L50:
+ 595              		.loc 1 597 32 is_stmt 1 discriminator 1 view .LVU185
+ 596 00a4 09F1FF39 		add	r9, r9, #-1
+ 597              	.LVL74:
+ 598              		.loc 1 597 32 is_stmt 0 discriminator 1 view .LVU186
+ 599 00a8 B9F1000F 		cmp	r9, #0
+ 600 00ac F7DC     		bgt	.L52
+ 598:Utilities/misc/stm32_tiny_vsnprintf.c ****         *str++ = (unsigned char) va_arg(args, int);
+ 601              		.loc 1 598 9 is_stmt 1 view .LVU187
+ 602              		.loc 1 598 34 is_stmt 0 view .LVU188
+ 603 00ae 049B     		ldr	r3, [sp, #16]
+ 604 00b0 1A1D     		adds	r2, r3, #4
+ 605 00b2 0492     		str	r2, [sp, #16]
+ 606              	.LVL75:
+ 607              		.loc 1 598 18 discriminator 1 view .LVU189
+ 608 00b4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 609              		.loc 1 598 16 discriminator 1 view .LVU190
+ 610 00b6 04F8013B 		strb	r3, [r4], #1
+ 611              	.LVL76:
+ 599:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 600:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 601:Utilities/misc/stm32_tiny_vsnprintf.c ****         while (--field_width > 0) *str++ = ' ';
+ 602:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 603:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 612              		.loc 1 603 9 is_stmt 1 view .LVU191
+ 613 00ba AEE7     		b	.L41
+ 614              	.L48:
+ 604:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 605:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 's':
+ 606:Utilities/misc/stm32_tiny_vsnprintf.c ****         s = va_arg(args, char *);
+ 615              		.loc 1 606 9 view .LVU192
+ 616              		.loc 1 606 11 is_stmt 0 view .LVU193
+ 617 00bc 049B     		ldr	r3, [sp, #16]
+ 618 00be 1A1D     		adds	r2, r3, #4
+ 619 00c0 0492     		str	r2, [sp, #16]
+ 620 00c2 1F68     		ldr	r7, [r3]
+ 607:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (!s) s = "<NULL>";
+ 621              		.loc 1 607 9 is_stmt 1 view .LVU194
+ 622              		.loc 1 607 12 is_stmt 0 view .LVU195
+ 623 00c4 1FB1     		cbz	r7, .L75
+ 624              	.L53:
+ARM GAS  /tmp/ccRzk6gi.s 			page 24
+
+
+ 625              	.LVL77:
+ 608:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 609:Utilities/misc/stm32_tiny_vsnprintf.c ****         len = strlen(s);
+ 626              		.loc 1 609 9 is_stmt 1 view .LVU196
+ 627              		.loc 1 609 15 is_stmt 0 view .LVU197
+ 628 00c6 3846     		mov	r0, r7
+ 629 00c8 FFF7FEFF 		bl	strlen
+ 630              	.LVL78:
+ 610:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 611:Utilities/misc/stm32_tiny_vsnprintf.c ****         len = strnlen(s, precision);
+ 612:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (!(flags & LEFT))
+ 613:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 614:Utilities/misc/stm32_tiny_vsnprintf.c ****           while (len < field_width--) *str++ = ' ';
+ 631              		.loc 1 614 11 is_stmt 1 view .LVU198
+ 632              		.loc 1 614 17 is_stmt 0 view .LVU199
+ 633 00cc 05E0     		b	.L54
+ 634              	.LVL79:
+ 635              	.L75:
+ 607:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 636              		.loc 1 607 19 discriminator 1 view .LVU200
+ 637 00ce 2C4F     		ldr	r7, .L76
+ 638 00d0 F9E7     		b	.L53
+ 639              	.LVL80:
+ 640              	.L55:
+ 641              		.loc 1 614 39 is_stmt 1 discriminator 2 view .LVU201
+ 642              		.loc 1 614 46 is_stmt 0 discriminator 2 view .LVU202
+ 643 00d2 2022     		movs	r2, #32
+ 644 00d4 04F8012B 		strb	r2, [r4], #1
+ 645              	.LVL81:
+ 646              		.loc 1 614 35 discriminator 1 view .LVU203
+ 647 00d8 9946     		mov	r9, r3
+ 648              	.LVL82:
+ 649              	.L54:
+ 650              		.loc 1 614 22 is_stmt 1 discriminator 1 view .LVU204
+ 651              		.loc 1 614 35 is_stmt 0 discriminator 1 view .LVU205
+ 652 00da 09F1FF33 		add	r3, r9, #-1
+ 653              	.LVL83:
+ 654              		.loc 1 614 22 discriminator 1 view .LVU206
+ 655 00de 8145     		cmp	r9, r0
+ 656 00e0 F7DC     		bgt	.L55
+ 615:Utilities/misc/stm32_tiny_vsnprintf.c ****         for (i = 0; i < len; ++i) *str++ = *s++;
+ 657              		.loc 1 615 16 view .LVU207
+ 658 00e2 0022     		movs	r2, #0
+ 659 00e4 06E0     		b	.L56
+ 660              	.LVL84:
+ 661              	.L57:
+ 662              		.loc 1 615 35 is_stmt 1 discriminator 3 view .LVU208
+ 663              		.loc 1 615 46 is_stmt 0 discriminator 3 view .LVU209
+ 664 00e6 3B46     		mov	r3, r7
+ 665              	.LVL85:
+ 666              		.loc 1 615 44 discriminator 3 view .LVU210
+ 667 00e8 13F8011B 		ldrb	r1, [r3], #1	@ zero_extendqisi2
+ 668              	.LVL86:
+ 669              		.loc 1 615 42 discriminator 3 view .LVU211
+ 670 00ec 04F8011B 		strb	r1, [r4], #1
+ 671              	.LVL87:
+ 672              		.loc 1 615 30 is_stmt 1 discriminator 3 view .LVU212
+ARM GAS  /tmp/ccRzk6gi.s 			page 25
+
+
+ 673 00f0 0132     		adds	r2, r2, #1
+ 674              	.LVL88:
+ 675              		.loc 1 615 46 is_stmt 0 discriminator 3 view .LVU213
+ 676 00f2 1F46     		mov	r7, r3
+ 677              	.LVL89:
+ 678              	.L56:
+ 679              		.loc 1 615 23 is_stmt 1 discriminator 1 view .LVU214
+ 680 00f4 8242     		cmp	r2, r0
+ 681 00f6 F6DB     		blt	.L57
+ 682              		.loc 1 615 23 is_stmt 0 discriminator 1 view .LVU215
+ 683 00f8 8FE7     		b	.L41
+ 684              	.LVL90:
+ 685              	.L51:
+ 616:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 617:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 618:Utilities/misc/stm32_tiny_vsnprintf.c ****         while (len < field_width--) *str++ = ' ';
+ 619:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 620:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 621:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 622:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef TINY_PRINTF
+ 623:Utilities/misc/stm32_tiny_vsnprintf.c ****       /* Does not support %p, %A, %a, %o */
+ 624:Utilities/misc/stm32_tiny_vsnprintf.c **** #else
+ 625:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'p':
+ 626:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (field_width == -1)
+ 627:Utilities/misc/stm32_tiny_vsnprintf.c ****         {
+ 628:Utilities/misc/stm32_tiny_vsnprintf.c ****           field_width = 2 * sizeof(void *);
+ 629:Utilities/misc/stm32_tiny_vsnprintf.c ****           flags |= ZEROPAD;
+ 630:Utilities/misc/stm32_tiny_vsnprintf.c ****         }
+ 631:Utilities/misc/stm32_tiny_vsnprintf.c ****         str = ee_number(str, (size - (str - buf)), (unsigned long) va_arg(args, void *), 16, field_
+ 632:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 633:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 634:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'A':
+ 635:Utilities/misc/stm32_tiny_vsnprintf.c ****         flags |= UPPERCASE;
+ 636:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 637:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'a':
+ 638:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (qualifier == 'l')
+ 639:Utilities/misc/stm32_tiny_vsnprintf.c ****           str = eaddr(str, va_arg(args, unsigned char *), field_width, precision, flags);
+ 640:Utilities/misc/stm32_tiny_vsnprintf.c ****         else
+ 641:Utilities/misc/stm32_tiny_vsnprintf.c ****           str = iaddr(str, va_arg(args, unsigned char *), field_width, precision, flags);
+ 642:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 643:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 644:Utilities/misc/stm32_tiny_vsnprintf.c ****       // Integer number formats - set up the flags and "break"
+ 645:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'o':
+ 646:Utilities/misc/stm32_tiny_vsnprintf.c ****         base = 8;
+ 647:Utilities/misc/stm32_tiny_vsnprintf.c ****         break;
+ 648:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 649:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 650:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'X':
+ 651:Utilities/misc/stm32_tiny_vsnprintf.c ****         flags |= UPPERCASE;
+ 686              		.loc 1 651 9 is_stmt 1 view .LVU216
+ 687              		.loc 1 651 15 is_stmt 0 view .LVU217
+ 688 00fa 48F04008 		orr	r8, r8, #64
+ 689              	.LVL91:
+ 652:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 653:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'x':
+ 654:Utilities/misc/stm32_tiny_vsnprintf.c ****         base = 16;
+ 690              		.loc 1 654 14 view .LVU218
+ARM GAS  /tmp/ccRzk6gi.s 			page 26
+
+
+ 691 00fe 1023     		movs	r3, #16
+ 692 0100 1CE0     		b	.L45
+ 693              	.L49:
+ 655:Utilities/misc/stm32_tiny_vsnprintf.c ****         break;
+ 656:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 657:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'd':
+ 658:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'i':
+ 659:Utilities/misc/stm32_tiny_vsnprintf.c ****         flags |= SIGN;
+ 694              		.loc 1 659 9 is_stmt 1 view .LVU219
+ 695              		.loc 1 659 15 is_stmt 0 view .LVU220
+ 696 0102 48F00208 		orr	r8, r8, #2
+ 697              	.LVL92:
+ 660:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 661:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'u':
+ 662:Utilities/misc/stm32_tiny_vsnprintf.c ****         break;
+ 663:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 664:Utilities/misc/stm32_tiny_vsnprintf.c **** #ifdef HAS_FLOAT
+ 665:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 666:Utilities/misc/stm32_tiny_vsnprintf.c ****       case 'f':
+ 667:Utilities/misc/stm32_tiny_vsnprintf.c ****         str = flt(str, va_arg(args, double), field_width, precision, *fmt, flags | SIGN);
+ 668:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 669:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 670:Utilities/misc/stm32_tiny_vsnprintf.c **** #endif
+ 671:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 672:Utilities/misc/stm32_tiny_vsnprintf.c ****       default:
+ 673:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (*fmt != '%') *str++ = '%';
+ 674:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 675:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (*fmt)
+ 676:Utilities/misc/stm32_tiny_vsnprintf.c ****           *str++ = *fmt;
+ 677:Utilities/misc/stm32_tiny_vsnprintf.c ****         else
+ 678:Utilities/misc/stm32_tiny_vsnprintf.c ****           --fmt;
+ 679:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 680:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 681:Utilities/misc/stm32_tiny_vsnprintf.c ****     }
+ 682:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 683:Utilities/misc/stm32_tiny_vsnprintf.c ****     if (qualifier == 'l')
+ 698              		.loc 1 683 5 is_stmt 1 view .LVU221
+ 684:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = va_arg(args, unsigned long);
+ 685:Utilities/misc/stm32_tiny_vsnprintf.c ****     else if (flags & SIGN)
+ 699              		.loc 1 685 10 view .LVU222
+ 588:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 700              		.loc 1 588 10 is_stmt 0 view .LVU223
+ 701 0106 0A23     		movs	r3, #10
+ 702 0108 1BE0     		b	.L58
+ 703              	.L44:
+ 673:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 704              		.loc 1 673 9 is_stmt 1 view .LVU224
+ 673:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 705              		.loc 1 673 12 is_stmt 0 view .LVU225
+ 706 010a 252A     		cmp	r2, #37
+ 707 010c 02D0     		beq	.L59
+ 673:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 708              		.loc 1 673 26 is_stmt 1 discriminator 1 view .LVU226
+ 709              	.LVL93:
+ 673:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 710              		.loc 1 673 33 is_stmt 0 discriminator 1 view .LVU227
+ 711 010e 2523     		movs	r3, #37
+ARM GAS  /tmp/ccRzk6gi.s 			page 27
+
+
+ 712 0110 04F8013B 		strb	r3, [r4], #1
+ 713              	.LVL94:
+ 714              	.L59:
+ 674:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (*fmt)
+ 715              		.loc 1 674 9 is_stmt 1 view .LVU228
+ 716 0114 631B     		subs	r3, r4, r5
+ 717 0116 9F42     		cmp	r7, r3
+ 718 0118 0FDD     		ble	.L70
+ 674:Utilities/misc/stm32_tiny_vsnprintf.c ****         if (*fmt)
+ 719              		.loc 1 674 39 discriminator 1 view .LVU229
+ 675:Utilities/misc/stm32_tiny_vsnprintf.c ****           *str++ = *fmt;
+ 720              		.loc 1 675 9 view .LVU230
+ 675:Utilities/misc/stm32_tiny_vsnprintf.c ****           *str++ = *fmt;
+ 721              		.loc 1 675 13 is_stmt 0 view .LVU231
+ 722 011a 059B     		ldr	r3, [sp, #20]
+ 723 011c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 675:Utilities/misc/stm32_tiny_vsnprintf.c ****           *str++ = *fmt;
+ 724              		.loc 1 675 12 view .LVU232
+ 725 011e 3AB1     		cbz	r2, .L60
+ 676:Utilities/misc/stm32_tiny_vsnprintf.c ****         else
+ 726              		.loc 1 676 11 is_stmt 1 view .LVU233
+ 727              	.LVL95:
+ 676:Utilities/misc/stm32_tiny_vsnprintf.c ****         else
+ 728              		.loc 1 676 18 is_stmt 0 view .LVU234
+ 729 0120 04F8012B 		strb	r2, [r4], #1
+ 730              	.LVL96:
+ 731              	.L61:
+ 679:Utilities/misc/stm32_tiny_vsnprintf.c ****         continue;
+ 732              		.loc 1 679 9 is_stmt 1 view .LVU235
+ 733 0124 631B     		subs	r3, r4, r5
+ 734 0126 9F42     		cmp	r7, r3
+ 735 0128 3FF777AF 		bgt	.L41
+ 588:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 736              		.loc 1 588 10 is_stmt 0 view .LVU236
+ 737 012c 0A23     		movs	r3, #10
+ 738 012e 05E0     		b	.L45
+ 739              	.L60:
+ 678:Utilities/misc/stm32_tiny_vsnprintf.c ****         CHECK_STR_SIZE(buf, str, size);
+ 740              		.loc 1 678 11 is_stmt 1 view .LVU237
+ 741 0130 013B     		subs	r3, r3, #1
+ 742 0132 0593     		str	r3, [sp, #20]
+ 743 0134 F6E7     		b	.L61
+ 744              	.L68:
+ 654:Utilities/misc/stm32_tiny_vsnprintf.c ****         break;
+ 745              		.loc 1 654 14 is_stmt 0 view .LVU238
+ 746 0136 1023     		movs	r3, #16
+ 747 0138 00E0     		b	.L45
+ 748              	.L70:
+ 588:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 749              		.loc 1 588 10 view .LVU239
+ 750 013a 0A23     		movs	r3, #10
+ 751              	.L45:
+ 752              	.LVL97:
+ 683:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = va_arg(args, unsigned long);
+ 753              		.loc 1 683 5 is_stmt 1 view .LVU240
+ 754              		.loc 1 685 10 view .LVU241
+ 755              		.loc 1 685 13 is_stmt 0 view .LVU242
+ARM GAS  /tmp/ccRzk6gi.s 			page 28
+
+
+ 756 013c 18F0020F 		tst	r8, #2
+ 757 0140 11D0     		beq	.L62
+ 758              	.LVL98:
+ 759              	.L58:
+ 686:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = va_arg(args, int);
+ 760              		.loc 1 686 7 is_stmt 1 view .LVU243
+ 761              		.loc 1 686 13 is_stmt 0 view .LVU244
+ 762 0142 049A     		ldr	r2, [sp, #16]
+ 763 0144 111D     		adds	r1, r2, #4
+ 764 0146 0491     		str	r1, [sp, #16]
+ 765 0148 1268     		ldr	r2, [r2]
+ 766              	.LVL99:
+ 767              	.L63:
+ 687:Utilities/misc/stm32_tiny_vsnprintf.c ****     else
+ 688:Utilities/misc/stm32_tiny_vsnprintf.c ****       num = va_arg(args, unsigned int);
+ 689:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 690:Utilities/misc/stm32_tiny_vsnprintf.c ****     str = ee_number(str, ((size - 1) - (str - buf)), num, base, field_width, precision, flags);
+ 768              		.loc 1 690 5 is_stmt 1 view .LVU245
+ 769              		.loc 1 690 45 is_stmt 0 view .LVU246
+ 770 014a 611B     		subs	r1, r4, r5
+ 771              		.loc 1 690 11 view .LVU247
+ 772 014c CDF80880 		str	r8, [sp, #8]
+ 773 0150 4FF0FF30 		mov	r0, #-1
+ 774 0154 0190     		str	r0, [sp, #4]
+ 775 0156 CDF80090 		str	r9, [sp]
+ 776 015a 791A     		subs	r1, r7, r1
+ 777 015c 2046     		mov	r0, r4
+ 778 015e FFF7FEFF 		bl	ee_number
+ 779              	.LVL100:
+ 780              		.loc 1 690 11 view .LVU248
+ 781 0162 0446     		mov	r4, r0
+ 782              	.LVL101:
+ 783              		.loc 1 690 11 view .LVU249
+ 784 0164 59E7     		b	.L41
+ 785              	.LVL102:
+ 786              	.L62:
+ 688:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 787              		.loc 1 688 7 is_stmt 1 view .LVU250
+ 688:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 788              		.loc 1 688 11 is_stmt 0 view .LVU251
+ 789 0166 049A     		ldr	r2, [sp, #16]
+ 790 0168 111D     		adds	r1, r2, #4
+ 791 016a 0491     		str	r1, [sp, #16]
+ 792 016c 1268     		ldr	r2, [r2]
+ 793 016e ECE7     		b	.L63
+ 794              	.LVL103:
+ 795              	.L39:
+ 691:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 692:Utilities/misc/stm32_tiny_vsnprintf.c **** 
+ 693:Utilities/misc/stm32_tiny_vsnprintf.c ****   *str = '\0';
+ 796              		.loc 1 693 3 is_stmt 1 view .LVU252
+ 797              		.loc 1 693 8 is_stmt 0 view .LVU253
+ 798 0170 0023     		movs	r3, #0
+ 799 0172 2370     		strb	r3, [r4]
+ 694:Utilities/misc/stm32_tiny_vsnprintf.c ****   return str - buf;
+ 800              		.loc 1 694 3 is_stmt 1 view .LVU254
+ 801              		.loc 1 694 14 is_stmt 0 view .LVU255
+ARM GAS  /tmp/ccRzk6gi.s 			page 29
+
+
+ 802 0174 601B     		subs	r0, r4, r5
+ 803              	.LVL104:
+ 804              	.L36:
+ 695:Utilities/misc/stm32_tiny_vsnprintf.c **** }
+ 805              		.loc 1 695 1 view .LVU256
+ 806 0176 07B0     		add	sp, sp, #28
+ 807              		.cfi_remember_state
+ 808              		.cfi_def_cfa_offset 28
+ 809              		@ sp needed
+ 810 0178 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 811              	.LVL105:
+ 812              	.L65:
+ 813              		.cfi_restore_state
+ 502:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 814              		.loc 1 502 12 view .LVU257
+ 815 017c 0020     		movs	r0, #0
+ 816              	.LVL106:
+ 502:Utilities/misc/stm32_tiny_vsnprintf.c ****   }
+ 817              		.loc 1 502 12 view .LVU258
+ 818 017e FAE7     		b	.L36
+ 819              	.L77:
+ 820              		.align	2
+ 821              	.L76:
+ 822 0180 00000000 		.word	.LC2
+ 823              		.cfi_endproc
+ 824              	.LFE2:
+ 826              		.text
+ 827              	.Letext0:
+ 828              		.file 2 "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-
+ 829              		.file 3 "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-
+ 830              		.file 4 "<built-in>"
+ 831              		.file 5 "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-
+ARM GAS  /tmp/ccRzk6gi.s 			page 30
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32_tiny_vsnprintf.c
+     /tmp/ccRzk6gi.s:19     .text.ee_skip_atoi:00000000 $t
+     /tmp/ccRzk6gi.s:24     .text.ee_skip_atoi:00000000 ee_skip_atoi
+     /tmp/ccRzk6gi.s:73     .rodata.ee_number.str1.4:00000000 $d
+     /tmp/ccRzk6gi.s:80     .text.ee_number:00000000 $t
+     /tmp/ccRzk6gi.s:85     .text.ee_number:00000000 ee_number
+     /tmp/ccRzk6gi.s:398    .text.ee_number:0000010c $d
+     /tmp/ccRzk6gi.s:404    .rodata.tiny_vsnprintf_like.str1.4:00000000 $d
+     /tmp/ccRzk6gi.s:408    .text.tiny_vsnprintf_like:00000000 $t
+     /tmp/ccRzk6gi.s:414    .text.tiny_vsnprintf_like:00000000 tiny_vsnprintf_like
+     /tmp/ccRzk6gi.s:532    .text.tiny_vsnprintf_like:00000068 $d
+     /tmp/ccRzk6gi.s:822    .text.tiny_vsnprintf_like:00000180 $d
+     /tmp/ccRzk6gi.s:566    .text.tiny_vsnprintf_like:00000089 $d
+     /tmp/ccRzk6gi.s:566    .text.tiny_vsnprintf_like:0000008a $t
+
+UNDEFINED SYMBOLS
+strlen

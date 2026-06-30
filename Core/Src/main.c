@@ -24,8 +24,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "sys_app.h"
+#include "subghz_phy_app.h"
 #include "radio.h"
+#include "sys_app.h"
+#include "utilities_conf.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,7 +70,7 @@ static void MX_GPIO_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
-
+void header_art();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -109,7 +111,8 @@ int main(void)
   MX_RTC_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  SystemApp_Init();
+  header_art();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -408,6 +411,25 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void header_art(){
+  APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "  _   _ __  *  __ ____    \r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, " | | | |\\ \\   / /|  _ \\   \r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, " | | | | \\ \\ / / | |_) |  \r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, " | |_| |  \\ V /  |  _ <   \r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "  \\___/ +  \\_/ + |_| \\_\\  \r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "------ANDURIL 3-------\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "----Sending Pebble----\r\n");
+  
+
+  HAL_Delay(100);
+}
+
+
+
+
+
 
 /* USER CODE END 4 */
 
@@ -423,14 +445,14 @@ void StartDefaultTask(void *argument)
   /* init code for SubGHz_Phy */
   MX_SubGHz_Phy_Init();
   /* USER CODE BEGIN 5 */
+
   uint8_t err;
   /* Infinite loop */
   for(;;)
   {
-    
-    //err = Radio.Send((uint8_t*)"test",4);
-    APP_LOG(TS_OFF, VLEVEL_ALWAYS, "trace test5\r\n");
-    osDelay(1);
+    err = Radio.Send((uint8_t*)CALL_SIGN,6);
+    APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Transmitting = %u \r\n", err);
+    osDelay(1000);
   }
   /* USER CODE END 5 */
 }

@@ -219,18 +219,13 @@ void vcom_Resume(void)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
   /* USER CODE BEGIN HAL_UART_TxCpltCallback_1 */
+
+  /* USER CODE END HAL_UART_TxCpltCallback_1 */
+  /* buffer transmission complete*/
   if (huart->Instance == USART1)
   {
-    if (TxCpltCallback != NULL)
-    {
-      TxCpltCallback(NULL);
-    }
-    return;
+    TxCpltCallback(NULL);
   }
-  return;
-  /* USER CODE END HAL_UART_TxCpltCallback_1 */
-  
-
   /* USER CODE BEGIN HAL_UART_TxCpltCallback_2 */
 
   /* USER CODE END HAL_UART_TxCpltCallback_2 */

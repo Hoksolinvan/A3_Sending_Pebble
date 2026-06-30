@@ -30,6 +30,7 @@ extern "C" {
 
 /* USER CODE BEGIN EC */
 
+
 /* USER CODE END EC */
 
 /* Includes ------------------------------------------------------------------*/

@@ -1,32 +1,33 @@
 {
-  "configurations": [
-    {
-      "name": "STM32",
-      "includePath": [
-        "Core/Inc",
-        "Drivers/CMSIS/Device/ST/STM32WLxx/Include",
-        "Drivers/CMSIS/Include",
-        "Drivers/CMSIS/RTOS2/Include",
-        "Drivers/STM32WLxx_HAL_Driver/Inc",
-        "Drivers/STM32WLxx_HAL_Driver/Inc/Legacy",
-        "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
-        "Middlewares/Third_Party/FreeRTOS/Source/include",
-        "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3",
-        "Middlewares/Third_Party/SubGHz_Phy/radio_driver",
-        "SubGHz_Phy/App",
-        "SubGHz_Phy/Target",
-        "Utilities/lpm/tiny_lpm",
-        "Utilities/misc",
-        "Utilities/timer",
-        "Utilities/trace/adv_trace"
-      ],
-      "defines": [
-        "CORE_CM4",
-        "STM32WLE5xx",
-        "USE_HAL_DRIVER"
-      ],
-      "compilerPath": "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-1.1/bin/arm-none-eabi-gcc"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "name": "STM32",
+            "includePath": [
+                "Core/Inc",
+                "Drivers/CMSIS/Device/ST/STM32WLxx/Include",
+                "Drivers/CMSIS/Include",
+                "Drivers/CMSIS/RTOS2/Include",
+                "Drivers/STM32WLxx_HAL_Driver/Inc",
+                "Drivers/STM32WLxx_HAL_Driver/Inc/Legacy",
+                "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
+                "Middlewares/Third_Party/FreeRTOS/Source/include",
+                "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3",
+                "Middlewares/Third_Party/SubGHz_Phy/radio_driver",
+                "SubGHz_Phy/App",
+                "SubGHz_Phy/Target",
+                "Utilities/lpm/tiny_lpm",
+                "Utilities/misc",
+                "Utilities/timer",
+                "Utilities/trace/adv_trace"
+            ],
+            "defines": [
+                "CORE_CM4",
+                "STM32WLE5xx",
+                "USE_HAL_DRIVER"
+            ],
+            "compilerPath": "/home/zgsdlv/.arduino15/packages/STMicroelectronics/tools/xpack-arm-none-eabi-gcc/14.2.1-1.1/bin/arm-none-eabi-gcc",
+            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json"
+        }
+    ],
+    "version": 4
 }

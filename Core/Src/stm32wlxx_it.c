@@ -51,31 +51,11 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void prvGetRegistersFromStack(uint32_t *pulFaultStackAddress)
-{
-  volatile uint32_t r0  = pulFaultStackAddress[0];
-  volatile uint32_t r1  = pulFaultStackAddress[1];
-  volatile uint32_t r2  = pulFaultStackAddress[2];
-  volatile uint32_t r3  = pulFaultStackAddress[3];
-  volatile uint32_t r12 = pulFaultStackAddress[4];
-  volatile uint32_t lr  = pulFaultStackAddress[5];
-  volatile uint32_t pc  = pulFaultStackAddress[6];
-  volatile uint32_t psr = pulFaultStackAddress[7];
 
-  volatile uint32_t cfsr  = SCB->CFSR;
-  volatile uint32_t hfsr  = SCB->HFSR;
-  volatile uint32_t bfar  = SCB->BFAR;
-  volatile uint32_t mmfar = SCB->MMFAR;
-
-  (void)r0; (void)r1; (void)r2; (void)r3; (void)r12;
-  (void)lr; (void)pc; (void)psr;
-  (void)cfsr; (void)hfsr; (void)bfar; (void)mmfar;
-
-  for(;;);
-}
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern SUBGHZ_HandleTypeDef hsubghz;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern UART_HandleTypeDef huart1;
 extern TIM_HandleTypeDef htim17;
@@ -108,14 +88,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-  __asm volatile(
-    " tst lr, #4          \n" /* Check EXC_RETURN bit 2: 0=MSP, 1=PSP */
-    " ite eq              \n"
-    " mrseq r0, msp       \n" /* Fault on MSP (main stack) */
-    " mrsne r0, psp       \n" /* Fault on PSP (task stack — most likely) */
-    " ldr r1, =prvGetRegistersFromStack \n"
-    " bx r1               \n"
-  );
+
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -242,6 +215,20 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SUBGHZ Radio Interrupt.
+  */
+void SUBGHZ_Radio_IRQHandler(void)
+{
+  /* USER CODE BEGIN SUBGHZ_Radio_IRQn 0 */
+
+  /* USER CODE END SUBGHZ_Radio_IRQn 0 */
+  HAL_SUBGHZ_IRQHandler(&hsubghz);
+  /* USER CODE BEGIN SUBGHZ_Radio_IRQn 1 */
+
+  /* USER CODE END SUBGHZ_Radio_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

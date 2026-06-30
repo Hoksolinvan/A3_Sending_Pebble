@@ -3,7 +3,7 @@
         {
             "showDevDebugOutput": "parsed",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/debug/A3_Sending_Pebble.elf",
+            "executable": "./build/Debug/A3_Sending_Pebble.elf",
             "name": "Debug STM32",
             "request": "launch",
             "type": "cortex-debug",
@@ -12,12 +12,16 @@
             "device": "stm32wle5",
             "configFiles": [
                 "openocd.cfg"
-            ]
+            ],
+            "liveWatch": {
+                "enabled": true,
+                "samplingInterval": 1000
+            }
         },
         {
             "showDevDebugOutput": "parsed",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/debug/A3_Sending_Pebble.elf",
+            "executable": "./build/Debug/A3_Sending_Pebble.elf",
             "name": "Attach STM32",
             "request": "attach",
             "type": "cortex-debug",
@@ -26,7 +30,11 @@
             "device": "stm32wle5",
             "configFiles": [
                 "openocd.cfg"
-            ]
+            ],
+            "liveWatch": {
+                "enabled": true,
+                "samplingInterval": 1000
+            }
         }
     ]
 }

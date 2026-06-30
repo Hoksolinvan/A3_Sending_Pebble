@@ -67,6 +67,7 @@ void SystemApp_Init(void)
 {
   /* USER CODE BEGIN SystemApp_Init_1 */
   UTIL_ADV_TRACE_Init();
+  UTIL_ADV_TRACE_SetVerboseLevel(VLEVEL_H);
   /* USER CODE END SystemApp_Init_1 */
 
 }

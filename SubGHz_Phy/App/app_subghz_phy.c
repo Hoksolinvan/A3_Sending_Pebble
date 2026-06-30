@@ -24,7 +24,7 @@
 #include "sys_app.h"
 
 /* USER CODE BEGIN Includes */
-
+ #include "stm32_adv_trace.h"
 /* USER CODE END Includes */
 
 /* External variables ---------------------------------------------------------*/

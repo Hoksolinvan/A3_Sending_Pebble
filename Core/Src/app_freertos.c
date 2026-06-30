@@ -29,16 +29,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
-    (void)xTask; (void)pcTaskName;
-    __disable_irq();
-    for(;;);  // set breakpoint here
-}
 
-void vApplicationMallocFailedHook(void) {
-    __disable_irq();
-    for(;;);  // set breakpoint here
-}
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/

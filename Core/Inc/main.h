@@ -64,6 +64,10 @@ void MX_USART1_UART_Init(void);
 #define RTC_PREDIV_A ((1<<(15-RTC_N_PREDIV_S))-1)
 #define RTC_N_PREDIV_S 10
 #define RTC_PREDIV_S ((1<<RTC_N_PREDIV_S)-1)
+#define GPS_TX_Pin GPIO_PIN_1
+#define GPS_TX_GPIO_Port GPIOC
+#define GPS_RX_Pin GPIO_PIN_0
+#define GPS_RX_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 

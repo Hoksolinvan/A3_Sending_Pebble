@@ -28,6 +28,7 @@
 #include "radio.h"
 #include "sys_app.h"
 #include "utilities_conf.h"
+#include "gps.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,12 +47,13 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef hlpuart1;
+UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_usart1_tx;
+
 RTC_HandleTypeDef hrtc;
 
 SUBGHZ_HandleTypeDef hsubghz;
-
-UART_HandleTypeDef huart1;
-DMA_HandleTypeDef hdma_usart1_tx;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -60,6 +62,13 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 2024 * 4
 };
+/* Definitions for GPS_Task */
+osThreadId_t GPS_TaskHandle;
+const osThreadAttr_t GPS_Task_attributes = {
+  .name = "GPS_Task",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 512 * 4
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -67,7 +76,9 @@ const osThreadAttr_t defaultTask_attributes = {
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_LPUART1_UART_Init(void);
 void StartDefaultTask(void *argument);
+void GPS_Process(void *argument);
 
 /* USER CODE BEGIN PFP */
 void header_art();
@@ -75,7 +86,8 @@ void header_art();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t gps_buffer[255];
+gps_t gps_data;
 /* USER CODE END 0 */
 
 /**
@@ -110,6 +122,7 @@ int main(void)
   MX_DMA_Init();
   MX_RTC_Init();
   MX_USART1_UART_Init();
+  MX_LPUART1_UART_Init();
   /* USER CODE BEGIN 2 */
   SystemApp_Init();
   header_art();
@@ -137,6 +150,9 @@ int main(void)
   /* Create the thread(s) */
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of GPS_Task */
+  GPS_TaskHandle = osThreadNew(GPS_Process, NULL, &GPS_Task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -211,6 +227,102 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief LPUART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_LPUART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN LPUART1_Init 0 */
+
+  /* USER CODE END LPUART1_Init 0 */
+
+  /* USER CODE BEGIN LPUART1_Init 1 */
+
+  /* USER CODE END LPUART1_Init 1 */
+  hlpuart1.Instance = LPUART1;
+  hlpuart1.Init.BaudRate = 9600;
+  hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
+  hlpuart1.Init.StopBits = UART_STOPBITS_1;
+  hlpuart1.Init.Parity = UART_PARITY_NONE;
+  hlpuart1.Init.Mode = UART_MODE_TX_RX;
+  hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  hlpuart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  hlpuart1.FifoMode = UART_FIFOMODE_DISABLE;
+  if (HAL_UART_Init(&hlpuart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetTxFifoThreshold(&hlpuart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetRxFifoThreshold(&hlpuart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_DisableFifoMode(&hlpuart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN LPUART1_Init 2 */
+
+  /* USER CODE END LPUART1_Init 2 */
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
+
 }
 
 /**
@@ -325,54 +437,6 @@ void MX_SUBGHZ_Init(void)
 }
 
 /**
-  * @brief USART1 Initialization Function
-  * @param None
-  * @retval None
-  */
-void MX_USART1_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART1_Init 0 */
-
-  /* USER CODE END USART1_Init 0 */
-
-  /* USER CODE BEGIN USART1_Init 1 */
-
-  /* USER CODE END USART1_Init 1 */
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART1_Init 2 */
-
-  /* USER CODE END USART1_Init 2 */
-
-}
-
-/**
   * Enable DMA controller clock
   */
 void MX_DMA_Init(void)
@@ -446,15 +510,55 @@ void StartDefaultTask(void *argument)
   MX_SubGHz_Phy_Init();
   /* USER CODE BEGIN 5 */
 
-  uint8_t err;
+  
   /* Infinite loop */
   for(;;)
   {
-    err = Radio.Send((uint8_t*)CALL_SIGN,6);
-    APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Transmitting = %u \r\n", err);
+    
     osDelay(1000);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_GPS_Process */
+/**
+* @brief Function implementing the GPS_Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_GPS_Process */
+void GPS_Process(void *argument)
+{
+  /* USER CODE BEGIN GPS_Process */
+
+  // asks the GPS module to only output RMC and GGA sentences, which contain the most relevant info
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GLL_UART1, 0, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSA_UART1, 0, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSV_UART1, 0, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_VTG_UART1, 0, UBX_LAYER_RAM);
+
+  // configure  gps module rates
+  gps_valset(&huart1, CFG_MSGOUT_NMEA_GGA_UART1, 1, UBX_LAYER_RAM);
+  gps_valset(&huart1, CFG_MSGOUT_NMEA_RMC_UART1, 1, UBX_LAYER_RAM);
+  /* Infinite loop */
+  for(;;)
+  {
+    HAL_UART_Receive_IT(&hlpuart1, gps_buffer, sizeof(gps_buffer));
+    APP_LOG(TS_OFF, VLEVEL_L, "%s\r\n", gps_buffer);
+    gps_parser(&gps_data, gps_buffer);
+   
+      // APP_LOG(TS_OFF, VLEVEL_L, "Header: %s\r\n", gps_data.header);
+      // APP_LOG(TS_OFF, VLEVEL_L, "UTC: %0.1f\r\n", gps_data.utc);
+      // APP_LOG(TS_OFF, VLEVEL_L, "Lat: %0.6f %c\r\n", gps_data.lat, gps_data.lat_ns);
+      // APP_LOG(TS_OFF, VLEVEL_L, "Lon: %0.6f %c\r\n", gps_data.lon, gps_data.lon_ew);
+      // APP_LOG(TS_OFF, VLEVEL_L, "quality: %c\r\n", gps_data.fix_quality);
+      // APP_LOG(TS_OFF, VLEVEL_L, "sats: %d\r\n", gps_data.num_sats);
+      // APP_LOG(TS_OFF, VLEVEL_L, "hdop: %0.1f\r\n", gps_data.hdop);
+      // APP_LOG(TS_OFF, VLEVEL_L, "alt: %0.1f\r\n", gps_data.altitude);
+    
+    osDelay(500);
+  }
+  /* USER CODE END GPS_Process */
 }
 
 /**

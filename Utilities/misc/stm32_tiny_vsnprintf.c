@@ -58,6 +58,10 @@
 #define SIGN      (1<<1)  /* Unsigned/signed long */
 #define UPPERCASE   (1<<6)  /* 'ABCDEF' */
 #ifdef TINY_PRINTF
+/* Never set by the tiny parser below, but referenced by the HAS_FLOAT
+ * float-formatting code regardless of TINY_PRINTF, so still define them. */
+#define HEX_PREP   (1<<5)  /* 0x */
+#define LEFT      (1<<4)  /* Left justified */
 #else
 #define PLUS      (1<<2)  /* Show plus */
 #define HEX_PREP   (1<<5)  /* 0x */
@@ -555,22 +559,22 @@ repeat:
 
     // Get the precision
     precision = -1;
-#ifdef TINY_PRINTF
-    /* Does not support %. */
-#else
     if (*fmt == '.')
     {
       ++fmt;
       if (is_digit(*fmt))
         precision = ee_skip_atoi(&fmt);
+#ifdef TINY_PRINTF
+      /* Does not support %.* */
+#else
       else if (*fmt == '*')
       {
         ++fmt;
         precision = va_arg(args, int);
       }
+#endif
       if (precision < 0) precision = 0;
     }
-#endif
 
     // Get the conversion qualifier
     qualifier = -1;

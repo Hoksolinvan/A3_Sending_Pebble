@@ -46,6 +46,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.c
+    Core/Src/gps.c
 )
 
 # Add include paths
@@ -66,6 +67,9 @@ target_include_directories(stm32cubemx INTERFACE
 )
 target_compile_definitions(stm32cubemx INTERFACE
     USE_BSP_DRIVER
+    # stm32_tiny_vsnprintf.c (used by APP_LOG/trace) only formats %f when
+    # this is defined; without it, "%f" is emitted literally.
+    HAS_FLOAT
 )
 
 # Remove wrong libob.a library dependency when using cpp files

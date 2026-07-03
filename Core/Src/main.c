@@ -29,6 +29,9 @@
 #include "sys_app.h"
 #include "utilities_conf.h"
 #include "gps.h"
+#include <stdint.h>
+#include <string.h>
+#include "usart_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,6 +52,7 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef hlpuart1;
 UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_lpuart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
 
 RTC_HandleTypeDef hrtc;
@@ -86,8 +90,13 @@ void header_art();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t gps_buffer[255];
-gps_t gps_data;
+
+//Variables for GPS
+#define NMEASIZE 85                        // max NMEA sentence length
+extern uint8_t dma_rx_buf[];               // circular DMA landing buffer (defined in usart_if.c)
+static uint8_t gps_buffer[NMEASIZE + 1];   // assembles one NMEA sentence
+static volatile uint8_t gps_ready_flg;     // set when a full sentence is ready
+gps_t gps_data;          // holds the gps data
 /* USER CODE END 0 */
 
 /**
@@ -450,6 +459,9 @@ void MX_DMA_Init(void)
   /* DMA1_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  /* DMA1_Channel2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
 
 }
 
@@ -485,9 +497,6 @@ void header_art(){
   APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
   APP_LOG(TS_OFF, VLEVEL_L, "------ANDURIL 3-------\r\n");
   APP_LOG(TS_OFF, VLEVEL_L, "----Sending Pebble----\r\n");
-  
-
-  HAL_Delay(100);
 }
 
 
@@ -531,32 +540,61 @@ void GPS_Process(void *argument)
 {
   /* USER CODE BEGIN GPS_Process */
 
-  // asks the GPS module to only output RMC and GGA sentences, which contain the most relevant info
+  // asks the GPS module to only output RMC and GGA sentences, which contain the most relevant info for pebble
   gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GLL_UART1, 0, UBX_LAYER_RAM);
   gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSA_UART1, 0, UBX_LAYER_RAM);
   gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSV_UART1, 0, UBX_LAYER_RAM);
   gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_VTG_UART1, 0, UBX_LAYER_RAM);
 
   // configure  gps module rates
-  gps_valset(&huart1, CFG_MSGOUT_NMEA_GGA_UART1, 1, UBX_LAYER_RAM);
-  gps_valset(&huart1, CFG_MSGOUT_NMEA_RMC_UART1, 1, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GGA_UART1, 1, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_RMC_UART1, 1, UBX_LAYER_RAM);
+
+  // start continuous circular DMA reception of the NMEA stream
+  HAL_UART_Receive_DMA(&hlpuart1, dma_rx_buf, DMA_RX_BUF_SIZE);
+
+  uint16_t rd_pos   = 0;   // our read index into the circular DMA buffer
+  uint16_t rx_index = 0;   // position within the sentence being assembled
   /* Infinite loop */
   for(;;)
   {
-    HAL_UART_Receive_IT(&hlpuart1, gps_buffer, sizeof(gps_buffer));
-    APP_LOG(TS_OFF, VLEVEL_L, "%s\r\n", gps_buffer);
-    gps_parser(&gps_data, gps_buffer);
-   
-      // APP_LOG(TS_OFF, VLEVEL_L, "Header: %s\r\n", gps_data.header);
-      // APP_LOG(TS_OFF, VLEVEL_L, "UTC: %0.1f\r\n", gps_data.utc);
-      // APP_LOG(TS_OFF, VLEVEL_L, "Lat: %0.6f %c\r\n", gps_data.lat, gps_data.lat_ns);
-      // APP_LOG(TS_OFF, VLEVEL_L, "Lon: %0.6f %c\r\n", gps_data.lon, gps_data.lon_ew);
-      // APP_LOG(TS_OFF, VLEVEL_L, "quality: %c\r\n", gps_data.fix_quality);
-      // APP_LOG(TS_OFF, VLEVEL_L, "sats: %d\r\n", gps_data.num_sats);
-      // APP_LOG(TS_OFF, VLEVEL_L, "hdop: %0.1f\r\n", gps_data.hdop);
-      // APP_LOG(TS_OFF, VLEVEL_L, "alt: %0.1f\r\n", gps_data.altitude);
-    
-    osDelay(500);
+    // write index = how far the DMA has filled (NDTR counts down from SIZE)
+    uint16_t wr_pos = DMA_RX_BUF_SIZE - __HAL_DMA_GET_COUNTER(&hdma_lpuart1_rx);
+
+    while (rd_pos != wr_pos)
+    {
+      uint8_t c = dma_rx_buf[rd_pos];
+      rd_pos = (rd_pos + 1) % DMA_RX_BUF_SIZE;
+
+      if (c == '$') {                                   // start of sentence
+        rx_index = 0;
+        gps_buffer[rx_index++] = c;
+      } else if (c == '\n' || c == '\r') {              // end of sentence
+        if (rx_index != 0) {
+          gps_buffer[rx_index] = '\0';
+          gps_ready_flg = 1;
+        }
+        rx_index = 0;
+      } else if (rx_index > 0 && rx_index < NMEASIZE) { // middle (only inside a sentence)
+        gps_buffer[rx_index++] = c;
+      } else {
+        rx_index = 0;                                   // junk before '$' / overflow -resync
+      }
+    }
+
+    if (gps_ready_flg)
+    {
+      // gps_parser() is destructive (writes '\0' over commas), so hand it a
+      // copy — the original stays intact for the async trace to finish sending.
+      static uint8_t gps_parse_buf[NMEASIZE + 1];
+      memcpy(gps_parse_buf, gps_buffer, sizeof(gps_parse_buf));
+
+      APP_LOG(TS_OFF, VLEVEL_L, "%s\r\n", gps_buffer);
+      gps_parser(&gps_data, gps_parse_buf);
+      gps_ready_flg = 0;
+    }
+
+    osDelay(250);
   }
   /* USER CODE END GPS_Process */
 }

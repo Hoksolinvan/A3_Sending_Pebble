@@ -42,7 +42,10 @@ extern UART_HandleTypeDef huart1;
 uint8_t charRx;
 
 /* USER CODE BEGIN EV */
+//For GPS
 
+uint8_t dma_rx_buf[DMA_RX_BUF_SIZE];   // circular DMA landing buffer for the GPS stream
+extern UART_HandleTypeDef hlpuart1;
 /* USER CODE END EV */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -234,7 +237,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   /* USER CODE BEGIN HAL_UART_RxCpltCallback_1 */
-
+  // static uint8_t rx_index;
+  // static uint8_t isr_buff[NMEASIZE+1];
   /* USER CODE END HAL_UART_RxCpltCallback_1 */
   if (huart->Instance == USART1)
   {
@@ -245,12 +249,18 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     HAL_UART_Receive_IT(huart, &charRx, 1);
   }
   /* USER CODE BEGIN HAL_UART_RxCpltCallback_2 */
-
   /* USER CODE END HAL_UART_RxCpltCallback_2 */
 }
 
 /* USER CODE BEGIN EF */
-
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == LPUART1)
+  {
+    __HAL_UART_CLEAR_OREFLAG(huart);
+    HAL_UART_Receive_DMA(&hlpuart1, dma_rx_buf, DMA_RX_BUF_SIZE);  // restart the stream
+  }
+}
 /* USER CODE END EF */
 
 /* Private Functions Definition -----------------------------------------------*/

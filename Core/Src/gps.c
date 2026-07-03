@@ -131,14 +131,8 @@ void gps_parse_sentence(gps_t *gps_data, uint8_t *gps_buffer, gps_sentence_t sen
 }
 
 
-
-
-
-
-
-
-// FOR CONFIGURING THE GPS MODULE (UBX PROTOCOL)
-
+// FOR CONFIGURING THE GPS MODULE (UBX PROTOCOL) AI Generated
+// I was just so tired, Ma..
 static uint8_t ubx_valset_value_size(uint32_t key)
 {
     switch ((key >> 28) & 0x07) {

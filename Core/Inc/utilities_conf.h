@@ -148,7 +148,17 @@ extern "C" {
 #define UTIL_ADV_TRACE_VSNPRINTF(...)              tiny_vsnprintf_like(__VA_ARGS__)      /*!< vsnprintf utilities interface to trace feature */
 
 /* USER CODE BEGIN EM */
-
+/* Route APP_LOG / trace formatting through the full C-library vsnprintf.
+ * The default tiny_vsnprintf_like is built with TINY_PRINTF and without
+ * HAS_FLOAT, so it mangles %f and precision specifiers like %.1f. The
+ * signature is identical (buf, size, fmt, va_list), so this is a drop-in.
+ * Float support is linked via `-u _printf_float` in
+ * cmake/gcc-arm-none-eabi.cmake. Kept here (USER CODE) so CubeMX
+ * regeneration does not wipe it. Keep individual trace lines < 256 bytes
+ * (UTIL_ADV_TRACE_TMP_BUF_SIZE) to avoid truncation. */
+#include <stdio.h>
+#undef UTIL_ADV_TRACE_VSNPRINTF
+#define UTIL_ADV_TRACE_VSNPRINTF(...)              vsnprintf(__VA_ARGS__)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

@@ -67,9 +67,11 @@ target_include_directories(stm32cubemx INTERFACE
 )
 target_compile_definitions(stm32cubemx INTERFACE
     USE_BSP_DRIVER
-    # stm32_tiny_vsnprintf.c (used by APP_LOG/trace) only formats %f when
-    # this is defined; without it, "%f" is emitted literally.
-    HAS_FLOAT
+    # NOTE: do NOT define HAS_FLOAT. It enables the float code in
+    # stm32_tiny_vsnprintf.c, which is incompatible with TINY_PRINTF (that
+    # build also strips HEX_PREP/PLUS/SPACE/LEFT) and fails to compile.
+    # Float formatting is instead handled by routing UTIL_ADV_TRACE_VSNPRINTF
+    # to the C-library vsnprintf in Core/Inc/utilities_conf.h.
 )
 
 # Remove wrong libob.a library dependency when using cpp files

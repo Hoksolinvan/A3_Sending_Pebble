@@ -115,15 +115,6 @@ void SubghzApp_Init(void)
   /* USER CODE BEGIN SubghzApp_Init_2 */
   Radio.SetChannel(RF_FREQUENCY);       // Hz
 
-  APP_LOG(TS_OFF, VLEVEL_L, "---------------\n\r");
-  APP_LOG(TS_OFF, VLEVEL_L, "LORA_FREQUENCY=%d MHz\n\r", RF_FREQUENCY/1000000);
-  APP_LOG(TS_OFF, VLEVEL_L, "LORA_MODULATION\n\r");
-  APP_LOG(TS_OFF, VLEVEL_L, "LORA_BW=%d kHz\n\r", (1 << LORA_BANDWIDTH) * 125);
-  APP_LOG(TS_OFF, VLEVEL_L, "LORA_SF=%d\n\r", LORA_SPREADING_FACTOR);
-  APP_LOG(TS_OFF, VLEVEL_L, "CALL_SIGN=%s\n\r", CALL_SIGN);
-  APP_LOG(TS_OFF, VLEVEL_L, "---------------\n\r");
-  APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
-  APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
 
 
   Radio.SetTxConfig(MODEM_LORA,

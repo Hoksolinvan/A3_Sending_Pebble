@@ -56,6 +56,8 @@ void RCC_IRQHandler(void);
 void DMA1_Channel1_IRQHandler(void);
 void DMA1_Channel2_IRQHandler(void);
 void TIM17_IRQHandler(void);
+void I2C2_EV_IRQHandler(void);
+void I2C2_ER_IRQHandler(void);
 void USART1_IRQHandler(void);
 void LPUART1_IRQHandler(void);
 void SUBGHZ_Radio_IRQHandler(void);

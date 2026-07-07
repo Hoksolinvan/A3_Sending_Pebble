@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32wlxx_hal_i2c.h"
 #include "subghz_phy_app.h"
 #include "radio.h"
 #include "sys_app.h"
@@ -32,6 +33,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "usart_if.h"
+#include "altimeter.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,6 +52,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c2;
+
 UART_HandleTypeDef hlpuart1;
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_lpuart1_rx;
@@ -59,10 +63,10 @@ RTC_HandleTypeDef hrtc;
 
 SUBGHZ_HandleTypeDef hsubghz;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for Conops_Task */
+osThreadId_t Conops_TaskHandle;
+const osThreadAttr_t Conops_Task_attributes = {
+  .name = "Conops_Task",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 2024 * 4
 };
@@ -70,6 +74,13 @@ const osThreadAttr_t defaultTask_attributes = {
 osThreadId_t GPS_TaskHandle;
 const osThreadAttr_t GPS_Task_attributes = {
   .name = "GPS_Task",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 512 * 4
+};
+/* Definitions for Altimeter_Task */
+osThreadId_t Altimeter_TaskHandle;
+const osThreadAttr_t Altimeter_Task_attributes = {
+  .name = "Altimeter_Task",
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 512 * 4
 };
@@ -81,8 +92,10 @@ const osThreadAttr_t GPS_Task_attributes = {
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_LPUART1_UART_Init(void);
-void StartDefaultTask(void *argument);
+static void MX_I2C2_Init(void);
+void Conops_Process(void *argument);
 void GPS_Process(void *argument);
+void Altimeter_Process(void *argument);
 
 /* USER CODE BEGIN PFP */
 void header_art();
@@ -96,7 +109,13 @@ void header_art();
 extern uint8_t dma_rx_buf[];               // circular DMA landing buffer (defined in usart_if.c)
 static uint8_t gps_buffer[NMEASIZE + 1];   // assembles one NMEA sentence
 static volatile uint8_t gps_ready_flg;     // set when a full sentence is ready
-gps_t gps_data;          // holds the gps data
+gps_t gps_data;                            // holds the gps data
+
+
+// Variables for BMP Altimeter
+
+
+
 /* USER CODE END 0 */
 
 /**
@@ -132,9 +151,10 @@ int main(void)
   MX_RTC_Init();
   MX_USART1_UART_Init();
   MX_LPUART1_UART_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  SystemApp_Init();
-  header_art();
+  
+  
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -157,11 +177,14 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of Conops_Task */
+  Conops_TaskHandle = osThreadNew(Conops_Process, NULL, &Conops_Task_attributes);
 
   /* creation of GPS_Task */
   GPS_TaskHandle = osThreadNew(GPS_Process, NULL, &GPS_Task_attributes);
+
+  /* creation of Altimeter_Task */
+  Altimeter_TaskHandle = osThreadNew(Altimeter_Process, NULL, &Altimeter_Task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -236,6 +259,54 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C2_Init(void)
+{
+
+  /* USER CODE BEGIN I2C2_Init 0 */
+
+  /* USER CODE END I2C2_Init 0 */
+
+  /* USER CODE BEGIN I2C2_Init 1 */
+
+  /* USER CODE END I2C2_Init 1 */
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.Timing = 0x00100D14;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c2, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C2_Init 2 */
+
+  /* USER CODE END I2C2_Init 2 */
+
 }
 
 /**
@@ -478,8 +549,8 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -495,34 +566,39 @@ void header_art(){
   APP_LOG(TS_OFF, VLEVEL_L, " | |_| |  \\ V /  |  _ <   \r\n");
   APP_LOG(TS_OFF, VLEVEL_L, "  \\___/ +  \\_/ + |_| \\_\\  \r\n");
   APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
-  APP_LOG(TS_OFF, VLEVEL_L, "------ANDURIL 3-------\r\n");
-  APP_LOG(TS_OFF, VLEVEL_L, "----Sending Pebble----\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "------ANDURIL 3---------\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "----Sending Pebble------\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "LORA_FREQUENCY:  %d MHz\n\r", RF_FREQUENCY/1000000);
+  APP_LOG(TS_OFF, VLEVEL_L, "LORA_BW:         %d kHz\n\r", (1 << LORA_BANDWIDTH) * 125);
+  APP_LOG(TS_OFF, VLEVEL_L, "LORA_SF:         %d\n\r", LORA_SPREADING_FACTOR);
+  APP_LOG(TS_OFF, VLEVEL_L, "CALL_SIGN:       %s\n\r", CALL_SIGN);
+  APP_LOG(TS_OFF, VLEVEL_L, "------------------------\n\r");
+  APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
+  APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
 }
-
-
-
-
 
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_Conops_Process */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the Conops_Task thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_Conops_Process */
+void Conops_Process(void *argument)
 {
   /* init code for SubGHz_Phy */
   MX_SubGHz_Phy_Init();
   /* USER CODE BEGIN 5 */
+  header_art();
 
   
   /* Infinite loop */
   for(;;)
   {
+    //APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Conops Process\r\n");
     
     osDelay(1000);
   }
@@ -540,24 +616,14 @@ void GPS_Process(void *argument)
 {
   /* USER CODE BEGIN GPS_Process */
 
-  // asks the GPS module to only output RMC and GGA sentences, which contain the most relevant info for pebble
-  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GLL_UART1, 0, UBX_LAYER_RAM);
-  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSA_UART1, 0, UBX_LAYER_RAM);
-  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSV_UART1, 0, UBX_LAYER_RAM);
-  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_VTG_UART1, 0, UBX_LAYER_RAM);
-
-  // configure  gps module rates
-  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GGA_UART1, 1, UBX_LAYER_RAM);
-  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_RMC_UART1, 1, UBX_LAYER_RAM);
-
-  // start continuous circular DMA reception of the NMEA stream
-  HAL_UART_Receive_DMA(&hlpuart1, dma_rx_buf, DMA_RX_BUF_SIZE);
+  gps_config(); 
 
   uint16_t rd_pos   = 0;   // our read index into the circular DMA buffer
   uint16_t rx_index = 0;   // position within the sentence being assembled
   /* Infinite loop */
   for(;;)
   {
+    //APP_LOG(TS_OFF, VLEVEL_ALWAYS, "GPS Process\r\n");
     // write index = how far the DMA has filled (NDTR counts down from SIZE)
     uint16_t wr_pos = DMA_RX_BUF_SIZE - __HAL_DMA_GET_COUNTER(&hdma_lpuart1_rx);
 
@@ -589,7 +655,7 @@ void GPS_Process(void *argument)
       static uint8_t gps_parse_buf[NMEASIZE + 1];
       memcpy(gps_parse_buf, gps_buffer, sizeof(gps_parse_buf));
 
-      APP_LOG(TS_OFF, VLEVEL_L, "%s\r\n", gps_buffer);
+      //APP_LOG(TS_OFF, VLEVEL_L, "%s\r\n", gps_buffer);
       gps_parser(&gps_data, gps_parse_buf);
       gps_ready_flg = 0;
     }
@@ -597,6 +663,34 @@ void GPS_Process(void *argument)
     osDelay(250);
   }
   /* USER CODE END GPS_Process */
+}
+
+/* USER CODE BEGIN Header_Altimeter_Process */
+/**
+* @brief Function implementing the Altimeter_Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Altimeter_Process */
+void Altimeter_Process(void *argument)
+{
+  /* USER CODE BEGIN Altimeter_Process */
+  uint8_t err;
+  alt_sensor_t altimeter;
+  
+  err = alt_config(&altimeter);
+  if(err != ALT_I2C_OK){APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Altimeter config error: %d\r\n", err);}
+  else {APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Altimeter configured successfully.\r\n");}
+
+
+
+  /* Infinite loop */
+  for(;;)
+  {
+    err = alt_get_data(&altimeter);   // returns ALT_I2C_BUSY until a conversion is ready
+    osDelay(500);
+  }
+  /* USER CODE END Altimeter_Process */
 }
 
 /**

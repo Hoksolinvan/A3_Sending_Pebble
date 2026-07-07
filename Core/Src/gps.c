@@ -11,7 +11,8 @@ gps_sentence_t gps_get_sentence_type(uint8_t *gps_buffer){
     return GPS_SENTENCE_UNKNOWN;
 }
 
-// Splits on ',' without collapsing empty fields (unlike strtok_r), so a
+// Big insight from Claude:
+// splits on ',' without collapsing empty fields (unlike strtok_r), so a
 // missing NMEA field (e.g. no fix -> ",,") still consumes its slot instead
 // of shifting every later field left. Returns "" for an empty field, or
 // NULL once the buffer is exhausted.
@@ -195,4 +196,20 @@ void gps_valset(UART_HandleTypeDef *huart, uint32_t key, uint64_t value, uint8_t
     frame[i++] = ck_b;
 
     HAL_UART_Transmit(huart, frame, i, 100);
+}
+
+void gps_config(){
+
+// asks the GPS module to only output RMC and GGA sentences, which contain the most relevant info for pebble
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GLL_UART1, 0, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSA_UART1, 0, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GSV_UART1, 0, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_VTG_UART1, 0, UBX_LAYER_RAM);
+
+  // configure  gps module rates
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_GGA_UART1, 1, UBX_LAYER_RAM);
+  gps_valset(&hlpuart1, CFG_MSGOUT_NMEA_RMC_UART1, 1, UBX_LAYER_RAM);
+
+  // start continuous circular DMA reception of the NMEA stream
+  HAL_UART_Receive_DMA(&hlpuart1, dma_rx_buf, DMA_RX_BUF_SIZE);
 }

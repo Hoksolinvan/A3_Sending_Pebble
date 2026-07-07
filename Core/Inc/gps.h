@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "sys_app.h"
 #include "stm32wlxx_hal.h"
-
+#include "usart_if.h"
 
 
 #define UBX_LAYER_RAM    0x01
@@ -58,6 +58,8 @@ typedef enum {
     GPS_SENTENCE_GGA,
 } gps_sentence_t;
   
+extern UART_HandleTypeDef hlpuart1;
+extern uint8_t dma_rx_buf[];    // circular DMA landing buffer (defined in usart_if.c)
 
 void gps_parser(gps_t *gps_data, uint8_t *gps_buffer);
 gps_sentence_t gps_get_sentence_type(uint8_t *gps_buffer);
@@ -66,5 +68,5 @@ void gps_parser_gga(gps_t *gps_data, uint8_t *gps_buffer);
 void gps_parse_sentence(gps_t *gps_data, uint8_t *gps_buffer, gps_sentence_t sentence_type);
 void gps_set_baud(UART_HandleTypeDef *huart, uint32_t new_baud, uint8_t *gps_rx_byte);
 void gps_valset(UART_HandleTypeDef *huart, uint32_t key, uint64_t value, uint8_t layers);
-
+void gps_config();
 #endif /* GPS_H */

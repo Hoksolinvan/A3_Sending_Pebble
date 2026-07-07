@@ -47,6 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Drivers/BSP/STM32WLxx_Nucleo/stm32wlxx_nucleo_radio.c
     Core/Src/gps.c
+    Core/Src/altimeter.c
 )
 
 # Add include paths

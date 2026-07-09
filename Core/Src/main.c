@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32wlxx_hal_gpio_ex.h"
 #include "stm32wlxx_hal_i2c.h"
 #include "subghz_phy_app.h"
 #include "radio.h"
@@ -34,6 +35,7 @@
 #include <string.h>
 #include "usart_if.h"
 #include "altimeter.h"
+#include "softuart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -84,6 +86,13 @@ const osThreadAttr_t Altimeter_Task_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 512 * 4
 };
+/* Definitions for FC_Task */
+osThreadId_t FC_TaskHandle;
+const osThreadAttr_t FC_Task_attributes = {
+  .name = "FC_Task",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 512 * 4
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -96,9 +105,11 @@ static void MX_I2C2_Init(void);
 void Conops_Process(void *argument);
 void GPS_Process(void *argument);
 void Altimeter_Process(void *argument);
+void FC_Process(void *argument);
 
 /* USER CODE BEGIN PFP */
 void header_art();
+void check_debug_pins();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -185,6 +196,9 @@ int main(void)
 
   /* creation of Altimeter_Task */
   Altimeter_TaskHandle = osThreadNew(Altimeter_Process, NULL, &Altimeter_Task_attributes);
+
+  /* creation of FC_Task */
+  FC_TaskHandle = osThreadNew(FC_Process, NULL, &FC_Task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -553,6 +567,22 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(FC_TX_GPIO_Port, FC_TX_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : FC_RX_Pin */
+  GPIO_InitStruct.Pin = FC_RX_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(FC_RX_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : FC_TX_Pin */
+  GPIO_InitStruct.Pin = FC_TX_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(FC_TX_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : USR_BTN_Pin */
   GPIO_InitStruct.Pin = USR_BTN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -573,12 +603,23 @@ static void MX_GPIO_Init(void)
 // User Button Interrupt
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  static bool debug_sel;
-  if(GPIO_Pin == USR_BTN_Pin) {
 
-    
-    APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Button Pressed. \r\n");
-  
+  if(GPIO_Pin == USR_BTN_Pin) {
+    APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Button Pressed, changing pins to debug mode. \r\n");
+
+    // Reconfigure PA13 (SWDIO) and PA14 (SWCLK) from GPIO back to SWD debug
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    GPIO_InitStruct.Pin       = GPIO_PIN_13 | GPIO_PIN_14;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull      = GPIO_NOPULL;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF0_SWD;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    check_debug_pins();
   }
 
 }
@@ -599,8 +640,25 @@ void header_art(){
   APP_LOG(TS_OFF, VLEVEL_L, "LORA_SF:         %d\n\r", LORA_SPREADING_FACTOR);
   APP_LOG(TS_OFF, VLEVEL_L, "CALL_SIGN:       %s\n\r", CALL_SIGN);
   APP_LOG(TS_OFF, VLEVEL_L, "------------------------\n\r");
+
+  // Report current config of PA13 (SWDIO) / PA14 (SWCLK)
+  check_debug_pins();
+  APP_LOG(TS_OFF, VLEVEL_L, "------------------------\n\r");
+
   APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
   APP_LOG(TS_OFF, VLEVEL_L, "\r\n");
+
+}
+
+void check_debug_pins(){
+
+  // Report current config of PA13 (SWDIO) / PA14 (SWCLK)
+  static const char *mode_str[4] = { "INPUT", "OUTPUT", "ALT_FN", "ANALOG" };
+  for (uint32_t pin = 13; pin <= 14; pin++) {
+    uint32_t mode = (GPIOA->MODER >> (pin * 2)) & 0x3;
+    uint32_t af   = (GPIOA->AFR[pin >> 3] >> ((pin & 0x7) * 4)) & 0xF;
+    APP_LOG(TS_OFF, VLEVEL_L, "PA%lu: %s, AF%lu\r\n", pin, mode_str[mode], af);
+  }
 }
 
 
@@ -717,6 +775,24 @@ void Altimeter_Process(void *argument)
     osDelay(500);
   }
   /* USER CODE END Altimeter_Process */
+}
+
+/* USER CODE BEGIN Header_FC_Process */
+/**
+* @brief Function implementing the FC_Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_FC_Process */
+void FC_Process(void *argument)
+{
+  /* USER CODE BEGIN FC_Process */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END FC_Process */
 }
 
 /**

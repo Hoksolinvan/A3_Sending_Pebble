@@ -80,8 +80,10 @@ typedef enum{
 
 typedef struct{
 
-    float pressure_data;
-    float temp_data;
+    float pressure;
+    float temperature;
+    uint32_t raw_temp;
+    uint32_t raw_press;
     alt_calib_data calib_data;
     alt_comm_t     i2c_status;
     alt_event_t    event;

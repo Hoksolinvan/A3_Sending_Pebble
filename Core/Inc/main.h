@@ -64,10 +64,14 @@ void MX_USART1_UART_Init(void);
 #define RTC_PREDIV_A ((1<<(15-RTC_N_PREDIV_S))-1)
 #define RTC_N_PREDIV_S 10
 #define RTC_PREDIV_S ((1<<RTC_N_PREDIV_S)-1)
+#define FC_RX_Pin GPIO_PIN_14
+#define FC_RX_GPIO_Port GPIOA
 #define BMP_SDA_Pin GPIO_PIN_15
 #define BMP_SDA_GPIO_Port GPIOA
 #define BMP_SCL_Pin GPIO_PIN_15
 #define BMP_SCL_GPIO_Port GPIOB
+#define FC_TX_Pin GPIO_PIN_13
+#define FC_TX_GPIO_Port GPIOA
 #define USR_BTN_Pin GPIO_PIN_13
 #define USR_BTN_GPIO_Port GPIOB
 #define USR_BTN_EXTI_IRQn EXTI15_10_IRQn

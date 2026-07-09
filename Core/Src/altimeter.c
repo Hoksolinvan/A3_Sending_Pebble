@@ -158,13 +158,11 @@ alt_status_t alt_get_data(alt_sensor_t * altimeter){
     if (ret != ALT_I2C_OK) return ret;
     altimeter->status = status;
     
-
     if(!(status & ALT_DRDY_PRESS_MSK) | !(status & ALT_DRDY_TEMP_MSK)){
         APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Data not ready yet\r\n");
         return ALT_NOT_READY;
     }
  
-
     //read presseure and temp data  
     uint8_t pressure_data[3];
     uint8_t temp_data[3];
@@ -173,28 +171,23 @@ alt_status_t alt_get_data(alt_sensor_t * altimeter){
     ret = alt_read_reg(ALT_TEMP_DATA_3, temp_data,   3);
     if(ret != ALT_I2C_OK) return ret;
 
-
-    // Data registers are little-endian
+    // Grab raw data and store. Data registers are little-endian
     uint32_t pressure_raw = ((uint32_t)pressure_data[2] << 16) | ((uint32_t)pressure_data[1] << 8) | pressure_data[0];
     uint32_t temp_raw     = ((uint32_t)temp_data[2] << 16)     | ((uint32_t)temp_data[1] << 8)     | temp_data[0];
+    altimeter->raw_temp = temp_raw;
+    altimeter->raw_press = pressure_raw;
 
+    //compensate raw values and store as float
     alt_temp_comp_fxd(temp_raw, &calib_data);              // sets calib_data.t_lin (S=48)
     uint64_t comp_press = alt_press_comp_fxd(pressure_raw, &calib_data);  // 1/100 Pa
-
-
     int32_t temp_centi = (int32_t)(((calib_data.t_lin >> 32) * 100) >> 16);
-    int32_t t_whole = temp_centi / 100;
-    int32_t t_frac  = temp_centi % 100;
-    if (t_frac < 0) t_frac = -t_frac;
-
-    uint32_t p_whole = (uint32_t)(comp_press / 100);
-    uint32_t p_frac  = (uint32_t)(comp_press % 100);
+    altimeter->temperature    = (float)temp_centi / 100.0f;   // degrees C
+    altimeter->pressure = (float)comp_press / 100.0f;   // Pa
 
     return ALT_I2C_OK;
 }
 
 alt_status_t alt_get_status(uint8_t * status_check){
-
     alt_reg status_reg = ALT_STATUS;
     uint8_t ret = alt_read_reg(status_reg, status_check, 1);
     if(ret != ALT_I2C_OK) APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Error reading Alt. status reg.");

@@ -72,6 +72,8 @@ void MX_USART1_UART_Init(void);
 #define BMP_SCL_GPIO_Port GPIOB
 #define FC_TX_Pin GPIO_PIN_13
 #define FC_TX_GPIO_Port GPIOA
+#define ADC_BATT_Pin GPIO_PIN_3
+#define ADC_BATT_GPIO_Port GPIOB
 #define USR_BTN_Pin GPIO_PIN_13
 #define USR_BTN_GPIO_Port GPIOB
 #define USR_BTN_EXTI_IRQn EXTI15_10_IRQn

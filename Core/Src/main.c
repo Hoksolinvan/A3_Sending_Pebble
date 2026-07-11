@@ -85,6 +85,8 @@ typedef struct __attribute__((packed)){
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc;
+
 I2C_HandleTypeDef hi2c2;
 
 UART_HandleTypeDef hlpuart1;
@@ -97,6 +99,7 @@ RTC_HandleTypeDef hrtc;
 SUBGHZ_HandleTypeDef hsubghz;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 
 /* Definitions for Conops_Task */
 osThreadId_t Conops_TaskHandle;
@@ -158,6 +161,8 @@ static void MX_GPIO_Init(void);
 static void MX_LPUART1_UART_Init(void);
 static void MX_I2C2_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_ADC_Init(void);
+static void MX_TIM2_Init(void);
 void Conops_Process(void *argument);
 void GPS_Process(void *argument);
 void Altimeter_Process(void *argument);
@@ -169,6 +174,7 @@ void header_art();
 void check_debug_pins();
 uint8_t getchar_v2(uint8_t SoftUartNumber);
 static void setState(deviceState_t new_state);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -181,9 +187,10 @@ static uint8_t gps_buffer[NMEASIZE + 1];   // assembles one NMEA sentence
 static volatile uint8_t gps_ready_flg;     // set when a full sentence is ready
 gps_t gps_data;                            // holds the gps data
 
-
 deviceState_t state; 
 
+uint16_t batt_mV;
+uint16_t batt_voltage_lookup[] = {3500, 3560, 3620, 3680, 3740, 3800, 3860, 3920, 3980, 4040, 4100};
 /* USER CODE END 0 */
 
 /**
@@ -221,6 +228,8 @@ int main(void)
   MX_LPUART1_UART_Init();
   MX_I2C2_Init();
   MX_TIM1_Init();
+  MX_ADC_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   
   
@@ -344,6 +353,53 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief ADC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC_Init(void)
+{
+
+  /* USER CODE BEGIN ADC_Init 0 */
+
+  /* USER CODE END ADC_Init 0 */
+
+  /* USER CODE BEGIN ADC_Init 1 */
+
+  /* USER CODE END ADC_Init 1 */
+
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+  */
+  hadc.Instance = ADC;
+  hadc.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc.Init.LowPowerAutoWait = ENABLE;
+  hadc.Init.LowPowerAutoPowerOff = DISABLE;
+  hadc.Init.ContinuousConvMode = DISABLE;
+  hadc.Init.NbrOfConversion = 1;
+  hadc.Init.DiscontinuousConvMode = DISABLE;
+  hadc.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T2_TRGO;
+  hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+  hadc.Init.DMAContinuousRequests = DISABLE;
+  hadc.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc.Init.SamplingTimeCommon1 = ADC_SAMPLETIME_3CYCLES_5;
+  hadc.Init.SamplingTimeCommon2 = ADC_SAMPLETIME_3CYCLES_5;
+  hadc.Init.OversamplingMode = DISABLE;
+  hadc.Init.TriggerFrequencyMode = ADC_TRIGGER_FREQ_HIGH;
+  if (HAL_ADC_Init(&hadc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC_Init 2 */
+
+  /* USER CODE END ADC_Init 2 */
+
 }
 
 /**
@@ -646,6 +702,51 @@ static void MX_TIM1_Init(void)
   /* TIM1 @ 48kHz drives the software UART bit engine (5x the 9600 baud rate) */
   HAL_TIM_Base_Start_IT(&htim1);
   /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 41999;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 59999 ;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -991,6 +1092,16 @@ void FC_Process(void *argument)
 }
 
 /* USER CODE BEGIN Header_Telem_process */
+
+//adc callback
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+
+    batt_mV = (uint16_t)HAL_ADC_GetValue(hadc)*2;
+    APP_LOG(TS_OFF, VLEVEL_ALWAYS, "Batt_mv: %u \r\n",batt_mV);
+    
+}
+
 /**
 * @brief Function implementing the telemetry thread.
 * @param argument: Not used
@@ -1016,11 +1127,16 @@ void Telem_process(void *argument)
   uint16_t fc_data;
 
   osStatus_t status;
+  //start adc
+  HAL_ADCEx_Calibration_Start(&hadc); 
+  HAL_ADC_Start_IT(&hadc);
+  HAL_TIM_Base_Start(&htim2);
 
   /* Infinite loop */
   for(;;)
   {
     payload.rocket_state = state;
+    payload.batt_v = batt_mV;
     status = osMessageQueueGet(GPS_QueueHandle, &gps, NULL, osWaitForever);
     if(status == osOK){
       payload.utc_hour    = gps.hour;
@@ -1065,7 +1181,7 @@ void Telem_process(void *argument)
     char line[3 * sizeof(payload) + 1];
     uint8_t *p = (uint8_t *)&payload;
     for (uint32_t i = 0; i < sizeof(payload); i++)
-    snprintf(&line[i * 3], 4, "%02X ", p[i]);
+    snprintf(&line[i * 3],4, "%02X ", p[i]);
     APP_LOG(TS_OFF, VLEVEL_ALWAYS, "PKT[%u]: %s\r\n", (unsigned)sizeof(payload), line);
 
     osThreadYield();

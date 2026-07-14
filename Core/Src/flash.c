@@ -89,7 +89,11 @@ spi_write_t Win_Read_Status_Register(uint8_t* sr_value, Status_Register_t sreg){
 spi_write_t Win_Write_Status_Register(win_sreg_write_t sreg, const uint8_t sreg_bytes){
 	HAL_StatusTypeDef status;
 
-	 Win_Write_Enable();
+	 if(Win_Write_Enable()!=WIN_SPI_OK){
+		return WIN_SPI_ERROR;
+	 }
+
+	 
 
 	 uint8_t tx[2] = {sreg,sreg_bytes};
 	 HAL_GPIO_WritePin(WIN_CS_PORT,WIN_CS_PIN,GPIO_PIN_RESET);
@@ -145,7 +149,7 @@ spi_write_t Win_Write_Status_Register_Volatile(win_sreg_write_t sreg, const uint
 spi_write_t Win_Read_Data(const uint8_t address[], uint8_t result[], int reads){
 	HAL_StatusTypeDef status;
 	uint8_t sr_value;
-	WIN_Read_Status_Register(&sr_value,SREG1);
+	Win_Read_Status_Register(&sr_value,SREG1);
 
 	if(sr_value & 0x01){
 		return WIN_SPI_BUSY;
@@ -161,12 +165,14 @@ spi_write_t Win_Read_Data(const uint8_t address[], uint8_t result[], int reads){
 
 	status = HAL_SPI_Transmit(&hspi1,CMD,4,HAL_MAX_DELAY);
 	if(status != HAL_OK){
+			HAL_GPIO_WritePin(WIN_CS_PORT,WIN_CS_PIN,GPIO_PIN_SET);
 			return WIN_SPI_ERROR;
 	}
 
 	status = HAL_SPI_Receive(&hspi1,result,reads,HAL_MAX_DELAY);
 
 	if(status != HAL_OK){
+			HAL_GPIO_WritePin(WIN_CS_PORT,WIN_CS_PIN,GPIO_PIN_SET);
 			return WIN_SPI_ERROR;
 		}
 
@@ -388,4 +394,57 @@ spi_write_t Win_Chip_Erase(){
 
 
 			return WIN_SPI_OK;
+}
+
+
+
+spi_write_t Win_Erase_Program_Suspend(void){
+
+	HAL_StatusTypeDef status;
+	uint8_t sr1, sr2;
+	uint8_t cmd = ERASE_PROGRAM_SUSPEND; // 0x75
+
+	// Read Status Register-1 (contains BUSY at bit 0)
+	if(Win_Read_Status_Register(&sr1, SREG1) != WIN_SPI_OK){
+		return WIN_SPI_ERROR;
+	}
+
+	// Read Status Register-2 (contains SUS at bit 7, i.e. S15)
+	if(Win_Read_Status_Register(&sr2, SREG2) != WIN_SPI_OK){
+		return WIN_SPI_ERROR;
+	}
+
+	
+	if(!(sr1 & 0x01) || (sr2 & 0x80)){
+		return WIN_SPI_ERROR; 
+	}
+
+	HAL_GPIO_WritePin(WIN_CS_PORT, WIN_CS_PIN, GPIO_PIN_RESET);
+	status = HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
+	HAL_GPIO_WritePin(WIN_CS_PORT, WIN_CS_PIN, GPIO_PIN_SET);
+
+	if(status != HAL_OK){
+		return WIN_SPI_ERROR;
+	}
+
+	// Datasheet: tSUS max = 20us -- BUSY clears from 1->0 and SUS sets 0->1
+	// within this window. Poll rather than blind-delay for correctness.
+	uint32_t start = HAL_GetTick();
+	uint8_t sus_confirmed = 0;
+
+	while((HAL_GetTick() - start) < 5){ // 5ms generous margin over 20us spec
+		if(Win_Read_Status_Register(&sr2, SREG2) != WIN_SPI_OK){
+			return WIN_SPI_ERROR;
+		}
+		if(sr2 & 0x80){ // SUS bit set -> suspend confirmed
+			sus_confirmed = 1;
+			break;
+		}
+	}
+
+	if(!sus_confirmed){
+		return WIN_SPI_ERROR; // suspend didn't take effect within expected window
+	}
+
+	return WIN_SPI_OK;
 }

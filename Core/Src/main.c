@@ -51,7 +51,7 @@ typedef enum{
 
 typedef struct __attribute__((packed)){
 
-  const char  header[3];
+  char  header[3];
   uint8_t  utc_hour;
   uint8_t  utc_minute;
   uint8_t  utc_seconds;
@@ -1125,7 +1125,7 @@ void Telem_process(void *argument)
   gps_t gps;
   alt_sensor_t alt;
   uint16_t fc_data;
-
+  uint8_t err = 0;
   osStatus_t status;
   //start adc
   HAL_ADCEx_Calibration_Start(&hadc); 
@@ -1183,7 +1183,10 @@ void Telem_process(void *argument)
     for (uint32_t i = 0; i < sizeof(payload); i++)
     snprintf(&line[i * 3],4, "%02X ", p[i]);
     APP_LOG(TS_OFF, VLEVEL_ALWAYS, "PKT[%u]: %s\r\n", (unsigned)sizeof(payload), line);
-
+    err = Radio.Send((uint8_t*)&payload,sizeof(payload));
+    if(err != 0){
+      APP_LOG(TS_OFF, VLEVEL_ALWAYS, "radio send error: %u \r\n", err);
+    }
     osThreadYield();
   }
   /* USER CODE END Telem_process */
